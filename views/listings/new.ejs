@@ -1,0 +1,88 @@
+<% layout("/layouts/boilerplate") %>
+<body>
+  <div class="row">
+    <div class="col-8 offset-2">
+      <br />
+      <h3>Create a New Listing</h3>
+
+      <form
+        action="/listings"
+        method="POST"
+        novalidate
+        class="needs-validation"
+        enctype="multipart/form-data"
+      >
+        <div class="mb-3">
+          <label for="title" class="form-label">Title:</label>
+          <input
+            type="text"
+            placeholder="Title of the listing"
+            id="title"
+            name="title"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description:</label>
+          <textarea
+            id="description"
+            name="description"
+            placeholder="Description of the listing"
+            class="form-control"
+            required
+          ></textarea>
+        </div>
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <label for="price" class="form-label">Price:</label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              placeholder="Price of the listing"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="mb-3 col-md-8">
+            <label for="country" class="form-label">Country:</label>
+            <input
+              type="text"
+              id="country"
+              name="country"
+              placeholder="Country of the listing"
+              class="form-control"
+              required
+            />
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="image" class="form-label">Upload Image</label>
+          <input type="file" id="image" name="image" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label for="location" class="form-label">Location:</label>
+          <input
+            type="text"
+            id="location"
+            name="location"
+            placeholder="Location of the listing"
+            class="form-control"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <button
+            type="submit"
+            class="btn"
+            style="background-color: #fe424d; color: white; border: none"
+          >
+            Create Listing
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>

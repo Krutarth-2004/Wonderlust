@@ -1,0 +1,95 @@
+<% layout("/layouts/boilerplate") %>
+<body>
+  <div class="row">
+    <div class="col-8 offset-2">
+      <br />
+      <h3>Edit Listing</h3>
+    </div>
+    <div class="col-8 offset-2">
+      <form
+        action="/listings/<%= listing._id %>/edit"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div class="mb-3">
+          <label for="title" class="form-label">Title:</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value="<%= listing.title %>"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description:</label>
+          <textarea
+            id="description"
+            name="description"
+            class="form-control"
+            required
+          >
+<%= listing.description %></textarea
+          >
+        </div>
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <label for="price" class="form-label">Price:</label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value="<%= listing.price %>"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="mb-3 col-md-8">
+            <label for="country" class="form-label">Country:</label>
+            <input
+              type="text"
+              id="country"
+              name="country"
+              value="<%= listing.country %>"
+              class="form-control"
+              required
+            />
+          </div>
+        </div>
+        <div class="mb-3">
+          <p>Original Image:</p>
+          <img src="<%= originalImage %>" />
+        </div>
+        <div class="mb-3">
+          <label for="image" class="form-label">Upload Image:</label>
+          <input
+            type="file"
+            id="image"
+            name="image"
+            value="<%= listing.image.url %>"
+            class="form-control"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="location" class="form-label">Location:</label>
+          <input
+            type="text"
+            id="location"
+            name="location"
+            value="<%= listing.location %>"
+            placeholder="Enter the Location of the listing"
+            class="form-control"
+          />
+        </div>
+        <button
+          type="submit"
+          class="btn mb-3"
+          style="background-color: #fe424d; color: white; border: none"
+        >
+          Update Listing
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
