@@ -73,7 +73,9 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   next();
 });
-
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/", usersRouter);
