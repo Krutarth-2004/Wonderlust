@@ -9,66 +9,11 @@ body {
   flex: 1;
 }
 
-.navbar {
-  height: 4rem;
-  background-color: white;
-}
-
-.fa-compass {
-  color: #fe424d;
-  font-size: 2rem;
-}
-
-.nav-link {
-  color: #fe424d !important;
-  font-size: 1.5rem;
-}
-
-.f-info-links,
-.f-info-socials,
-.f-info-brand {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.f-info-links a {
-  text-decoration: none;
-  color: #222222;
-}
-
-.f-info-links a:hover {
-  text-decoration: underline;
-  color: #fe424d;
-}
-
-.f-info-socials i {
-  font-size: 1.3rem;
-  margin-right: 1rem;
-}
-
-.f-info {
-  text-align: center;
-  background-color: #f8f9fa;
-  height: 8rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: space-evenly;
-}
-
 .listing-card {
   border: none !important;
   border-radius: 1rem !important;
-  margin-bottom: 2rem !important;
+  margin-bottom: 1rem !important;
   overflow: hidden; /* Ensures content stays inside rounded corners */
-}
-
-.card-img-top {
-  width: 100% !important;
-  height: 200px; /* ✅ set height */
-  object-fit: cover !important; /* ✅ fills area and crops if needed */
 }
 
 .card-body {
@@ -89,10 +34,6 @@ body {
   background-color: white;
 }
 
-.show-img {
-  height: 30vh;
-}
-
 .btns {
   display: flex;
 }
@@ -100,46 +41,12 @@ body {
 .show-card {
   padding-left: 0;
   padding-right: 0;
+  margin-top: 10px;
 }
 
 #map {
-  height: 500px;
+  height: 400px;
   width: 100%;
-}
-
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.filter {
-  text-align: center;
-  margin-top: 1rem;
-  margin-right: 2rem;
-  opacity: 0.8;
-  /* margin-bottom: 1rem; */
-}
-.filter:hover {
-  opacity: 1;
-  cursor: pointer;
-}
-
-.filter p {
-  font-size: 0.8rem;
-}
-.filter i {
-  font-size: 1.5rem;
-}
-.tax-info{
-  display: none;
-}
-
-.tax-toggle{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 3rem;
-  border: 1px solid black;
-  border-radius: 1rem;
-  padding: 1rem;
+  border-radius: 10px;
+  margin-top: 15px;
 }

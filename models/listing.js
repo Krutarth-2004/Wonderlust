@@ -14,8 +14,34 @@ const listingSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  location: {
+  address: {
+    type: String, // Full address as a single string
+    required: true,
+  },
+  category: {
     type: String,
+    enum: [
+      "house",
+      "flat/apartment",
+      "barn",
+      "boat",
+      "cabin",
+      "cottage",
+      "campervan",
+      "castle",
+      "container",
+      "earth_home",
+      "farm",
+      "guest_house",
+      "hotel",
+      "houseboat",
+      "tiny_home",
+      "tower",
+      "tree_house",
+      "windmill",
+      "yurt",
+    ],
+
     required: true,
   },
   image: {
@@ -27,10 +53,6 @@ const listingSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-  },
-  country: {
-    type: String,
-    required: true,
   },
   reviews: [
     {
@@ -50,9 +72,14 @@ const listingSchema = new mongoose.Schema({
       required: true,
     },
     coordinates: {
-      type: [Number],
+      type: [Number], // [longitude, latitude]
       required: true,
     },
+  },
+  maxOccupancy: {
+    type: Number,
+    required: true,
+    min: 1, // Ensure at least one person can occupy
   },
 });
 

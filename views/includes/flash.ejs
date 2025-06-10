@@ -1,27 +1,48 @@
-<% if(success && success.length) { %>
-<div
-  class="alert alert-success alert-dismissible fade show col-6 offset-3"
-  role="alert"
->
-  <%= success %>
-  <button
-    type="button"
-    class="btn-close"
-    data-bs-dismiss="alert"
-    aria-label="Close"
-  ></button>
-</div>
-<% } if(error && error.length) { %>
-<div
-  class="alert alert-danger alert-dismissible fade show col-6 offset-3"
-  role="alert"
->
-  <%= error %>
-  <button
-    type="button"
-    class="btn-close"
-    data-bs-dismiss="alert"
-    aria-label="Close"
-  ></button>
-</div>
-<% } %>
+<style>
+  .toastify-center {
+    left: 30% !important;
+
+    transform: translateX(-50%) !important; /* only horizontal centering */
+    max-width: 400px !important;
+    z-index: 9999 !important; /* Make sure it stays on top */
+  }
+</style>
+
+<script>
+  // Store server flash message to sessionStorage on initial page render
+  document.addEventListener("DOMContentLoaded", () => {
+    <% if (success && success.length > 0) { %>
+      sessionStorage.setItem('flashMessage', JSON.stringify({
+        type: 'success',
+        text: '<%= success[0].replace(/'/g, "\\'") %>'
+      }));
+    <% } else if (error && error.length > 0) { %>
+      sessionStorage.setItem('flashMessage', JSON.stringify({
+        type: 'error',
+        text: '<%= error[0].replace(/'/g, "\\'") %>'
+      }));
+    <% } %>
+  });
+
+  // Show toast immediately from sessionStorage, then clear it
+  document.addEventListener("DOMContentLoaded", () => {
+    const flash = sessionStorage.getItem('flashMessage');
+    if (flash) {
+      const { type, text } = JSON.parse(flash);
+      Toastify({
+        text: text,
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "center",
+        className: "toastify-center shadow rounded text-white",
+        backgroundColor:
+          type === "success"
+            ? "linear-gradient(to right, #198754, #45a049)"
+            : "linear-gradient(to right, #dc3545, #bb2d3b)",
+        stopOnFocus: true,
+      }).showToast();
+      sessionStorage.removeItem('flashMessage');
+    }
+  });
+</script>

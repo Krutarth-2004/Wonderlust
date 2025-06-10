@@ -1,120 +1,459 @@
 <% layout("/layouts/boilerplate") %>
+<style>
+  .filters-container {
+    position: relative;
+    width: 100%;
+
+    max-width: 900px; /* or whatever width you want */
+    margin: 0 auto;
+    margin-top: 1rem;
+    padding: 8px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  }
+
+  .filters {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 8px 40px; /* padding so arrows don't overlap content */
+    gap: 16px;
+  }
+
+  .filters::-webkit-scrollbar {
+    display: none; /* hide scrollbar */
+  }
+  .filter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative; /* for overlays if needed */
+    flex: 0 0 auto;
+    width: 70px;
+    text-align: center;
+    cursor: pointer;
+    color: #555;
+    font-size: 12px;
+  }
+
+  /* Icon styling */
+  .filter i {
+    font-size: 1.2rem;
+    color: #403f3f; /* default icon color */
+    transition: color 0.3s ease;
+    margin-top: 1rem;
+    margin-bottom: 6px;
+    opacity: 0.6;
+    text-align: center;
+  }
+  .custom-input:focus {
+    border-color: #fe424d; /* Airbnb red shade or your preferred color */
+    box-shadow: none; /* Removes default glow */
+    outline: none; /* Removes default outline */
+  }
+
+  /* Text styling */
+  .filter div {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #403f3f; /* default text color */
+    text-align: center;
+  }
+
+  /* Active filter styling */
+  .filter.active-filter {
+    background-color: #fcecec; /* light red background */
+    box-shadow: 0 2px 6px rgba(254, 66, 77, 0.4); /* red shadow */
+  }
+
+  /* Active icon and text color */
+  .filter.active-filter i,
+  .filter.active-filter div {
+    color: #fe424d;
+  }
+
+  /* Hover effect */
+  .filter:hover {
+    background-color: #fde7e7; /* subtle off-white background on hover */
+    box-shadow: 0 2px 4px rgba(254, 66, 77, 0.2); /* red shadow on hover */
+  }
+
+  .filter:hover i {
+    opacity: 1;
+  }
+
+  /* Focus effect for accessibility (optional) */
+  .filter:focus-within {
+    outline: 2px solid rgba(254, 66, 77, 0.5);
+    outline-offset: 2px;
+  }
+
+  /* Target Bootstrap switch */
+  .form-check-input:checked {
+    background-color: #fe424d;
+    border-color: #fe424d;
+  }
+
+  .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(254, 66, 77, 0.25);
+  }
+
+  /* Optional: change the thumb toggle color on dark themes if desired */
+  .form-check-input:checked:focus {
+    box-shadow: 0 0 0 0.25rem rgba(254, 66, 77, 0.25);
+  }
+  .form-check-input {
+    transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+  /* Arrow buttons */
+  .scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #000;
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 0.3);
+    opacity: 0.6;
+  }
+  .scroll-button:hover {
+    opacity: 1;
+  }
+
+  .scroll-button:disabled {
+    background: #cccccc;
+    cursor: default;
+  }
+
+  .scroll-left {
+    left: 8px;
+  }
+
+  .scroll-right {
+    right: 8px;
+  }
+  .tax-info {
+    display: none;
+  }
+
+  .tax-toggle {
+    margin-top: 1rem;
+    width: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    border: 1px solid black;
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+
+  .favorite-btn {
+    border: 2px solid #ff69b4;
+    background-color: #ffffff;
+    color: #ff69b4;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .favorite-btn:hover {
+    background-color: #ffe6f0;
+  }
+
+  .favorite-btn.favorited {
+    background-color: #ff69b4;
+    color: #ffffff;
+    border: none;
+  }
+</style>
 
 <body>
-  <div class="filters">
-    <div class="filter">
-      <div><i class="fa-solid fa-fire"></i></div>
-      <p>Trending</p>
+  <div class="filters-container">
+    <button
+      class="scroll-button scroll-left"
+      id="scroll-left"
+      aria-label="Scroll left"
+      disabled
+    >
+      <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <div class="filters" id="filters">
+      <div class="filter" title="house">
+        <i class="fas fa-house"></i>
+        <div>House</div>
+      </div>
+      <div class="filter" title="flat/apartment">
+        <i class="fas fa-building"></i>
+        <div>Flat/<br />Apartment</div>
+      </div>
+      <div class="filter" title="barn">
+        <i class="fas fa-warehouse"></i>
+        <div>Barn</div>
+      </div>
+      <div class="filter" title="boat">
+        <i class="fas fa-ship"></i>
+        <div>Boat</div>
+      </div>
+      <div class="filter" title="cabin">
+        <i class="fas fa-campground"></i>
+        <div>Cabin</div>
+      </div>
+      <div class="filter" title="cottage">
+        <i class="fa-brands fa-cotton-bureau"></i>
+        <div>Cottage</div>
+      </div>
+      <div class="filter" title="campervan">
+        <i class="fas fa-caravan"></i>
+        <div>Campervan</div>
+      </div>
+      <div class="filter" title="castle">
+        <i class="fab fa-fort-awesome"></i>
+        <div>Castle</div>
+      </div>
+      <div class="filter" title="container">
+        <i class="fas fa-box"></i>
+        <div>Container</div>
+      </div>
+      <div class="filter" title="earth_home">
+        <i class="fas fa-globe"></i>
+        <div>Earth Home</div>
+      </div>
+      <div class="filter" title="farm">
+        <i class="fas fa-tractor"></i>
+        <div>Farm</div>
+      </div>
+      <div class="filter" title="guest_house">
+        <i class="fas fa-house-user"></i>
+        <div>Guest House</div>
+      </div>
+      <div class="filter" title="hotel">
+        <i class="fas fa-hotel"></i>
+        <div>Hotel</div>
+      </div>
+      <div class="filter" title="houseboat">
+        <i class="fas fa-ship"></i>
+        <div>Houseboat</div>
+      </div>
+      <div class="filter" title="tiny_home">
+        <i class="fas fa-house"></i>
+        <div>Tiny Home</div>
+      </div>
+      <div class="filter" title="tower">
+        <i class="fas fa-tower-observation"></i>
+        <div>Tower</div>
+      </div>
+      <div class="filter" title="tree_house">
+        <i class="fas fa-tree"></i>
+        <div>Tree House</div>
+      </div>
+      <div class="filter" title="windmill">
+        <i class="fas fa-wind"></i>
+        <div>Windmill</div>
+      </div>
+      <div class="filter" title="yurt">
+        <i class="fas fa-campground"></i>
+        <div>Yurt</div>
+      </div>
     </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-person-swimming"></i></div>
-      <p>Amazing pools</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-bed"></i></div>
-      <p>Rooms</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-snowflake"></i></div>
-      <p>Arctic</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-campground"></i></div>
-      <p>Camping</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-caravan"></i></div>
-      <p>Camper vans</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-brands fa-fort-awesome"></i></div>
-      <p>Castles</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-box"></i></div>
-      <p>Containers</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-globe"></i></div>
-      <p>Earth Homes</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-brands fa-figma"></i></i></div>
-      <p>Design</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-tractor"></i></div>
-      <p>Farms</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-square-parking"></i></i></div>
-      <p>National parks</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-wine-glass"></i></div>
-      <p>Vineyards</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-house"></i></div>
-      <p>Tiny homes</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-tower-observation"></i></div>
-      <p>Towers</p>
-    </div>
-    <div class="filter">
-      <div><<i class="fa-solid fa-wind"></i></div>
-      <p>Windmills</p>
-    </div>
-    <div class="filter">
-      <div><i class="fa-solid fa-utensils"></i></div>
-      <p>Luxe</p>
-    </div>
-    <div class="tax-toggle ms-auto">
-      <div class="form-check-reverse form-switch"> 
-  <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-  <label class="form-check-label" for="switchCheckDefault">Display total after taxes</label>
+
+    <button
+      class="scroll-button scroll-right"
+      id="scroll-right"
+      aria-label="Scroll right"
+    >
+      <i class="fas fa-chevron-right"></i>
+    </button>
   </div>
+  <div class="tax-toggle ms-auto mt-4">
+    <div class="form-check-reverse form-switch">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        role="switch"
+        id="switchCheckDefault"
+        aria-label="Display total after taxes"
+        style="cursor: pointer"
+      />
+      <label class="form-check-label" for="switchCheckDefault">
+        Display total after taxes
+      </label>
     </div>
   </div>
+
   <br />
   <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
-    <% for(let listing of allListings) { %>
-    <a href="/listings/<%= listing._id %>" class="listing-link">
-      <div class="card col listing-card">
-        <img
-          src="<%= listing.image.url %>"
-          class="card-img-top"
-          style="height: 20rem"
-          alt="listing_image"
-        />
-        <div class="card-img-overlay"></div>
-        <div class="card-body">
-          <p class="card-text">
-            <!-- <strong>Title:</strong> -->
-            <b><%= listing.title %></b><br />
-            <!-- <strong>Price:</strong> -->
-            &#8377; <%= listing.price.toLocaleString("en-IN") %>/night
-            &nbsp;<i class="tax-info">+18% GST</i>
-          </p>
-        </div>
-      </div>
-    </a>
+    <% allListings.forEach((listing, index) => { %>
+    <div class="card col listing-card mt-2 mb-3" data-index="<%= index %>">
+      <div class="position-relative">
+        <a href="/listings/<%= listing._id %>" class="listing-link">
+          <img
+            src="<%= listing.image.url %>"
+            class="card-img-top"
+            style="height: 20rem"
+            alt="listing_image"
+          />
+          <div class="card-img-overlay"></div>
+        </a>
 
-    <% } %>
+        <!-- Heart Favorite Button -->
+        <form
+          action="/favorites/<%= listing._id %>"
+          method="POST"
+          class="favorite-form position-absolute top-0 end-0 m-2"
+        >
+          <% const isFavorite = user && Array.isArray(user.favorites) &&
+          user.favorites.includes(listing._id.toString()); %> <% if (isFavorite)
+          { %>
+          <button
+            type="submit"
+            class="favorite-btn favorited"
+            title="Remove from favorites"
+            formaction="/favorites/<%= listing._id %>?_method=DELETE"
+          >
+            <i class="fas fa-heart"></i>
+          </button>
+          <% } else { %>
+          <button type="submit" class="favorite-btn" title="Add to favorites">
+            <i class="far fa-heart"></i>
+          </button>
+          <% } %>
+        </form>
+      </div>
+
+      <div class="card-body">
+        <p class="card-text">
+          <b><%= listing.title %></b><br />
+          <% const totalPrice = listing.price * 1.18; %>
+          <span class="base-price"
+            >&#8377; <%= Math.round(listing.price).toLocaleString("en-IN")
+            %>/night</span
+          >
+          <span class="total-price" style="display: none"
+            >&#8377; <%= Math.round(totalPrice).toLocaleString("en-IN") %>/night
+            (incl. GST)</span
+          >
+        </p>
+      </div>
+    </div>
+    <% }) %>
   </div>
 </body>
 
 <script>
+  // Tax Toggle Handler
   const taxSwitch = document.getElementById("switchCheckDefault");
-  taxSwitch.addEventListener("click",()=>{
-    let taxinfo = document.getElementsByClassName("tax-info");
-    for(info of taxinfo) {
-      if(info.style.display != "inline") {
-        info.style.display = "inline";
-      } else {
-        info.style.display = "none";
+  taxSwitch.addEventListener("change", () => {
+    const basePrices = document.getElementsByClassName("base-price");
+    const totalPrices = document.getElementsByClassName("total-price");
+
+    if (taxSwitch.checked) {
+      for (let i = 0; i < basePrices.length; i++) {
+        basePrices[i].style.display = "none";
+      }
+      for (let i = 0; i < totalPrices.length; i++) {
+        totalPrices[i].style.display = "inline";
+      }
+    } else {
+      for (let i = 0; i < basePrices.length; i++) {
+        basePrices[i].style.display = "inline";
+      }
+      for (let i = 0; i < totalPrices.length; i++) {
+        totalPrices[i].style.display = "none";
       }
     }
+  });
+</script>
+
+<script>
+  const filters = document.getElementById("filters");
+  const btnLeft = document.getElementById("scroll-left");
+  const btnRight = document.getElementById("scroll-right");
+
+  btnLeft.addEventListener("click", () => {
+    filters.scrollBy({ left: -150, behavior: "smooth" });
+  });
+
+  btnRight.addEventListener("click", () => {
+    filters.scrollBy({ left: 150, behavior: "smooth" });
+  });
+
+  // Disable buttons at scroll edges
+  function updateButtons() {
+    btnLeft.disabled = filters.scrollLeft <= 0;
+    btnRight.disabled =
+      filters.scrollLeft + filters.clientWidth >= filters.scrollWidth - 1;
+  }
+
+  filters.addEventListener("scroll", updateButtons);
+  window.addEventListener("resize", updateButtons);
+
+  updateButtons(); // initial check
+</script>
+
+<script>
+  const filterElements = document.querySelectorAll(".filter");
+  const listings = document.querySelectorAll(".listing-card");
+  const allListings = <%- JSON.stringify(allListings) %>; // make sure this is safe
+
+  // On page load, try to restore active filter from localStorage
+  let activeFilter = localStorage.getItem("selectedFilter") || null;
+
+  function activateFilter(category) {
+    filterElements.forEach((filter) => {
+      if (filter.getAttribute("title") === category) {
+        filter.classList.add("active-filter");
+      } else {
+        filter.classList.remove("active-filter");
+      }
+    });
+
+    listings.forEach((card) => {
+      const index = card.getAttribute("data-index");
+      const listingCategory = allListings[index].category;
+      if (!category || listingCategory === category) {
+        card.style.display = "";
+      } else {
+        card.style.display = "none";
+      }
+    });
+  }
+
+  // Restore filter on page load if any
+  if (activeFilter) {
+    activateFilter(activeFilter);
+  }
+
+  filterElements.forEach((filter) => {
+    filter.addEventListener("click", () => {
+      const category = filter.getAttribute("title");
+      if (activeFilter === category) {
+        activeFilter = null;
+        localStorage.removeItem("selectedFilter");
+      } else {
+        activeFilter = category;
+        localStorage.setItem("selectedFilter", category);
+      }
+      activateFilter(activeFilter);
+    });
   });
 </script>

@@ -1,19 +1,94 @@
-<footer>
-  <div class="f-info">
-    <div class="f-info-socials">
-      <i class="fa-brands fa-facebook"></i>
-      <i class="fa-brands fa-instagram"></i>
-      <i class="fa-brands fa-twitter"></i>
-      <i class="fa-brands fa-linkedin"></i>
-    </div>
-    <div class="f-info-brand">&copy;Wonderlust Private Limited</div>
-    <div class="f-info-links">
-      <a href="/privacy">Privacy Policy</a>
-      <a href="/terms">Terms of Service</a>
-      <a href="/contact">Contact Us</a>
-      <a href="/about">About Us</a>
-      <a href="/help">Help</a>
-    </div>
+<style>
+  .footer-custom {
+    background-color: #f8f9fa; /* Off-white background */
+    color: #000; /* Black text */
+  }
 
+  .footer-custom a {
+    color: #000; /* Black text */
+    text-decoration: none;
+  }
+
+  .footer-custom a:hover {
+    color: #fe424d; /* Airbnb red on hover */
+    text-decoration: underline;
+  }
+
+  /*.footer-custom .btn-outline-light {
+    border-color: black;
+    color: black;
+  }
+
+  .footer-custom .btn-outline-light:hover {
+    border-color: #fe424d;
+    background-color: #fe424d;
+    color: #fff;
+  }*/
+
+  .footer-custom i {
+    font-size: 1.25rem;
+    color: #000;
+  }
+
+  .footer-custom i:hover {
+    color: #fe424d;
+  }
+  .btn {
+    border: 1px solid #fe424d;
+    color: #000;
+    background-color: white;
+  }
+  .btn:hover {
+    background-color: #fe424d;
+    color: white;
+  }
+</style>
+
+<footer class="footer-custom py-4 mt-4">
+  <div class="container">
+    <div class="row">
+      <!-- Socials -->
+      <div
+        class="col-md-3 mb-3 mb-md-0 d-flex align-items-center justify-content-center"
+      >
+        <div class="f-info-socials">
+          <a href="#" class="me-3" aria-label="Facebook">
+            <i class="fa-brands fa-facebook"></i>
+          </a>
+          <a href="#" class="me-3" aria-label="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="#" class="me-3" aria-label="Twitter">
+            <i class="fa-brands fa-twitter"></i>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <i class="fa-brands fa-linkedin"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="col-md-6 mb-3 mb-md-0">
+        <div class="f-info-links text-center">
+          <a href="/privacy" class="me-3">Privacy Policy</a>
+          <a href="/terms" class="me-3">Terms & Conditions</a>
+          <a href="/contact" class="me-3">Contact Us</a>
+        </div>
+        <div class="f-info-brand text-center mt-2">
+          &copy; Wonderlust Private Limited
+        </div>
+      </div>
+
+      <!-- Back to Top -->
+      <div class="col-md-3 d-flex align-items-center justify-content-center">
+        <button
+          onclick="window.scrollTo({ top: 0, behavior: 'smooth' });"
+          class="btn"
+          aria-label="Back to Top"
+        >
+          Back to Top
+        </button>
+      </div>
+    </div>
   </div>
 </footer>

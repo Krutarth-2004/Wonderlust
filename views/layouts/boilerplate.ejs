@@ -32,14 +32,28 @@
       rel="stylesheet"
       href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <link
+      rel="icon"
+      href="/images/Screenshot 2025-06-05 at 11.34.48-modified.png"
+      type="image/x-icon"
+      sizes="128x128"
+    />
+
     <title>Wonderlust</title>
   </head>
   <body>
-    <%- include("../includes/navbar") %>
-    <div class="container">
-      <%- include("../includes/flash.ejs") %> <%- body %>
-    </div>
-    <%- include("../includes/footer") %>
+    <% if (typeof hideHeaderFooter === 'undefined') { %> <%-
+    include("../includes/navbar") %> <% } %>
+
+    <div class="container"><%- body %></div>
+
+    <% if (typeof hideHeaderFooter === 'undefined') { %> <%-
+    include("../includes/footer") %> <% } %>
+
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
     <script
@@ -49,5 +63,9 @@
     ></script>
     <script src="/js/script.js"></script>
     <script src="/js/map.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <%- include("../includes/flash") %>
   </body>
 </html>

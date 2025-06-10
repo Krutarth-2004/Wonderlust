@@ -1,0 +1,92 @@
+<% layout('layouts/boilerplate') %>
+<style>
+  /* Custom border color on input focus */
+  .custom-input:focus {
+    border-color: #fe424d; /* Airbnb red shade or your preferred color */
+    box-shadow: none; /* Removes default glow */
+    outline: none; /* Removes default outline */
+  }
+</style>
+
+<div class="container mt-5" style="max-width: 480px">
+  <h2 class="mb-4">Change Password</h2>
+
+  <form action="/settings" method="POST" class="needs-validation" novalidate>
+    <div class="mb-3">
+      <label for="currentPassword" class="form-label">Current Password</label>
+      <div class="input-group">
+        <input
+          type="password"
+          class="form-control custom-input"
+          id="currentPassword"
+          name="currentPassword"
+          required
+          autofocus
+        />
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          onclick="togglePassword()"
+          tabindex="-1"
+        >
+          <i id="toggleIcon" class="fa-solid fa-eye"></i>
+        </button>
+        <div class="invalid-feedback">Current Password is required.</div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="newPassword" class="form-label">New Password</label>
+      <div class="input-group">
+        <input
+          type="password"
+          class="form-control custom-input"
+          id="newPassword"
+          name="newPassword"
+          required
+        />
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          onclick="togglePassword()"
+          tabindex="-1"
+        >
+          <i id="toggleIcon" class="fa-solid fa-eye"></i>
+        </button>
+        <div class="invalid-feedback">New Password is required.</div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="confirmPassword" class="form-label"
+        >Confirm new Password</label
+      >
+      <div class="input-group">
+        <input
+          type="password"
+          class="form-control custom-input"
+          id="confirmPassword"
+          name="confirmPassword"
+          required
+        />
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          onclick="togglePassword()"
+          tabindex="-1"
+        >
+          <i id="toggleIcon" class="fa-solid fa-eye"></i>
+        </button>
+        <div class="invalid-feedback">Password is required.</div>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="btn w-100"
+      style="background-color: #fe424d; color: white"
+    >
+      Change Password
+    </button>
+  </form>
+</div>

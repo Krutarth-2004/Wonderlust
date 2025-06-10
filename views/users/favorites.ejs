@@ -1,0 +1,56 @@
+<% layout("/layouts/boilerplate") %>
+<style>
+  .custom-input:focus {
+    border-color: #fe424d; /* Airbnb red shade or your preferred color */
+    box-shadow: none; /* Removes default glow */
+    outline: none; /* Removes default outline */
+  }
+</style>
+<div class="container mt-3 mb-3">
+  <h2>Your Favorites</h2>
+
+  <% if (favorites.length === 0) { %>
+  <div
+    class="alert alert-info mt-3"
+    style="background-color: white; color: #fe424d; border-color: #fe424d"
+  >
+    You have no favorites yet.
+  </div>
+  <% } else { %>
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+    <% favorites.forEach(favorite => { %>
+    <a href="/listings/<%= favorite._id %>" class="listing-link">
+      <div class="card col listing-card mt-3">
+        <img
+          src="<%= favorite.image.url %>"
+          class="card-img-top"
+          style="height: 20rem"
+          alt="listing_image"
+        />
+        <!-- <div class="card-img-overlay"></div> -->
+        <!-- <div class="card-body"> -->
+        <div class="d-flex justify-content-between align-items-center">
+          <b><%= favorite.title %></b>
+          <form
+            action="/favorites/<%= favorite._id %>?_method=DELETE"
+            method="POST"
+          >
+            <button
+              type="submit"
+              class="btn btn-sm mt-3"
+              title="Remove from favorites"
+              style="color: #fe424d; border-color: #fe424d"
+            >
+              <i class="fas fa-heart-broken"></i>&nbsp; <b>Remove</b>
+            </button>
+          </form>
+        </div>
+        <div>&#8377; <%= favorite.price.toLocaleString("en-IN") %>/night</div>
+        <!-- </div> -->
+      </div>
+    </a>
+
+    <% }) %>
+  </div>
+  <% } %>
+</div>

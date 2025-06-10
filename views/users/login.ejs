@@ -1,29 +1,92 @@
 <% layout("/layouts/boilerplate") %>
-<div class="row mb-3">
+<style>
+  /* Custom border color on input focus */
+  .custom-input:focus {
+    border-color: #fe424d; /* Airbnb red shade or your preferred color */
+    box-shadow: none; /* Removes default glow */
+    outline: none; /* Removes default outline */
+  }
+</style>
+
+<div class="row" style="margin-top: 80px">
   <div class="col-md-6 offset-md-3">
-    <h2 class="text-center mt-3">Login</h2>
+    <h2 class="text-center">Login</h2>
+    <!-- Login Form -->
     <form action="/login" method="POST" class="needs-validation" novalidate>
       <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
+        <label for="usernameOrEmail" class="form-label"
+          >Username or Email</label
+        >
         <input
           type="text"
-          class="form-control"
-          id="username"
-          name="username"
+          class="form-control custom-input"
+          id="usernameOrEmail"
+          name="usernameOrEmail"
           required
+          autofocus
         />
+        <div class="invalid-feedback">Username is required.</div>
       </div>
+
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
-        <input
-          type="password"
-          class="form-control"
-          id="password"
-          name="password"
-          required
-        />
+        <div class="input-group">
+          <input
+            type="password"
+            class="form-control custom-input"
+            id="password"
+            name="password"
+            required
+          />
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            onclick="togglePassword()"
+            tabindex="-1"
+          >
+            <i id="toggleIcon" class="fa-solid fa-eye"></i>
+          </button>
+          <div class="invalid-feedback">Password is required.</div>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary">Login</button>
+
+      <button
+        type="submit"
+        class="btn mb-3"
+        style="width: 100%; background-color: #fe424d; color: #fff"
+      >
+        Login
+      </button>
+      <br />
     </form>
+
+    <!-- <a href="/google" class="btn btn-outline-danger w-100 mb-5"
+      >Sign in with Google</a
+    > -->
+    <div class="text-center">
+      <a href="/forgot-password" style="color: #fe424d">Forgot Password?</a>
+      &nbsp; | &nbsp; Don't have an account? &nbsp;<a
+        href="/signup"
+        style="color: #fe424d; text-decoration: none"
+      >
+        SignUp here</a
+      >
+    </div>
   </div>
 </div>
+
+<script>
+  function togglePassword() {
+    const passwordInput = document.getElementById("password"); // adjust as needed
+    const icon = document.getElementById("toggleIcon");
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+    } else {
+      passwordInput.type = "password";
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+    }
+  }
+</script>

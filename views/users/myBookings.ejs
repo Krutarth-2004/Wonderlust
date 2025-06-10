@@ -1,0 +1,256 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  .custom-input:focus {
+    border-color: #fe424d; /* Airbnb red shade or your preferred color */
+    box-shadow: none; /* Removes default glow */
+    outline: none; /* Removes default outline */
+  }
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #000; /* Your theme primary color */
+  }
+
+  p {
+    font-size: 1.2rem;
+    color: #000;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  thead {
+    background-color: white; /* Theme accent color */
+    color: black;
+    border: 2px solid #fe424d;
+    border-collapse: collapse;
+    border-radius: 6px;
+  }
+
+  th,
+  td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f9ff;
+  }
+
+  a {
+    color: #fe424d;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  button {
+    background-color: #fff;
+    border: 2px solid #fe424d; /* Theme button color */
+    color: black;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  button:hover {
+    background-color: #fe424d;
+    color: white;
+  }
+
+  form {
+    margin: 0;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-content {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 400px;
+    margin: auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .modal-content h2 {
+    margin-bottom: 1rem;
+    color: #e74c3c;
+  }
+
+  .modal-buttons {
+    margin-top: 1rem;
+  }
+
+  .modal-buttons button {
+    margin: 0 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .danger-btn {
+    background-color: #e74c3c;
+    color: #fff;
+  }
+
+  .danger-btn:hover {
+    background-color: #c0392b;
+  }
+
+  .secondary-btn {
+    background-color: #bdc3c7;
+    color: #2c3e50;
+  }
+
+  .secondary-btn:hover {
+    background-color: #95a5a6;
+  }
+
+  .close {
+    float: right;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<h1 class="mt-3">Your Bookings</h1>
+
+<% if (bookings.length === 0) { %>
+<div
+  class="alert alert-info mt-3"
+  style="background-color: white; color: #fe424d; border-color: #fe424d"
+>
+  You have no bookings yet.
+</div>
+<% } else { %>
+<table>
+  <thead>
+    <tr>
+      <th>Listing</th>
+      <th>Check In</th>
+      <th>Check Out</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% bookings.forEach(booking => { %>
+    <tr>
+      <td>
+        <% if (booking.listing) { %>
+        <a href="/listings/<%= booking.listing._id %>">
+          <%= booking.listing.title %>
+        </a>
+        <% } else { %>
+        <span class="text-muted">Listing Not Available</span>
+        <% } %>
+      </td>
+
+      <td>
+        <%= booking.checkIn ? new Date(booking.checkIn).toDateString() : "N/A"
+        %>
+      </td>
+      <td>
+        <%= booking.checkOut ? new Date(booking.checkOut).toDateString() : "N/A"
+        %>
+      </td>
+      <td>
+        <form
+          method="POST"
+          action="/bookings/<%= booking._id %>?_method=DELETE"
+          class="cancel-booking-form"
+        >
+          <button
+            type="button"
+            class="cancel-btn"
+            style="border-radius:10px;"
+            data-booking-id="<%= booking._id %>"
+          >
+            Cancel
+          </button>
+        </form>
+      </td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>
+<% } %>
+<!-- Modal -->
+<div id="cancelModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Confirm Cancellation</h2>
+    <p>Are you sure you want to cancel this booking?</p>
+    <div class="modal-buttons">
+      <button id="confirmCancel" class="danger-btn mb-2">Yes, Cancel</button>
+      <button id="closeModal" class="secondary-btn">No, Keep Booking</button>
+    </div>
+  </div>
+</div>
+<script>
+  let selectedForm = null;
+
+  document.querySelectorAll(".cancel-btn").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const bookingId = e.target.getAttribute("data-booking-id");
+      selectedForm = e.target.closest("form");
+      document.getElementById("cancelModal").style.display = "flex";
+    });
+  });
+
+  document.getElementById("closeModal").addEventListener("click", () => {
+    document.getElementById("cancelModal").style.display = "none";
+    selectedForm = null;
+  });
+
+  document.querySelector(".close").addEventListener("click", () => {
+    document.getElementById("cancelModal").style.display = "none";
+    selectedForm = null;
+  });
+
+  window.addEventListener("click", (e) => {
+    if (e.target === document.getElementById("cancelModal")) {
+      document.getElementById("cancelModal").style.display = "none";
+      selectedForm = null;
+    }
+  });
+
+  document.getElementById("confirmCancel").addEventListener("click", () => {
+    if (selectedForm) {
+      selectedForm.submit();
+    }
+  });
+</script>

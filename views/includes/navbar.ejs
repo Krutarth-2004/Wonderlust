@@ -11,15 +11,11 @@
     display: flex;
   }
 
-  .search-btn:hover {
-    background-color: #fe424d;
-    color: #fff;
-  }
-
   .search-btn i {
     display: inline;
     margin-right: 0.25rem;
   }
+
   .search-inp {
     padding: 0.5rem;
     font-size: 0.9rem;
@@ -27,87 +23,159 @@
     width: 250px;
     text-align: center;
   }
+
+  .custom-input:focus {
+    border-color: #fe424d;
+    /* Airbnb red shade or your preferred color */
+    box-shadow: none;
+    /* Removes default glow */
+    outline: none;
+    /* Removes default outline */
+  }
+
+  .navbar {
+    height: 4rem;
+    background-color: white;
+  }
+
+  .fa-compass {
+    color: #fe424d;
+    font-size: 2rem;
+  }
+
+  .nav-link {
+    color: #fe424d !important;
+    font-size: 1.5rem;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+  }
+
+  .f-info-links,
+  .f-info-socials,
+  .f-info-brand {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .f-info-links a {
+    text-decoration: none;
+    color: #222222;
+  }
+
+  .f-info-links a:hover {
+    text-decoration: underline;
+    color: #fe424d;
+  }
+
+  .f-info-socials i {
+    font-size: 1.3rem;
+    margin-right: 1rem;
+  }
+
+  .f-info {
+    text-align: center;
+    background-color: #f8f9fa;
+    height: 8rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-evenly;
+  }
 </style>
+
+<script>
+  var tooltipTriggerList = [].slice.call(
+    document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  );
+  tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+    new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+</script>
 
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
-    <a class="navbar-brand me-0" href="/listings"
-      ><i class="fa-solid fa-compass"></i
-    ></a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNavAltMarkup"
-    >
+    <a class="navbar-brand me-0" href="/listings"><i class="fa-solid fa-compass"></i></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"      data-bs-target="#navbarNavAltMarkup">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-link" href="/listings">Wonderlust</a>
+        <a class="nav-link" href="/listings" style="font-size:1.2rem;">Wonderlust</a>
       </div>
       <div class="d-flex align-items-center ms-auto">
         <form class="d-flex align-items-center" role="search">
-          <input
-            class="form-control me-2 search-inp"
-            type="search"
-            placeholder="Search destinations"
-            aria-label="Search"
-          />
-          <button class="btn search-btn" type="submit">
-            <i class="fa-solid fa-magnifying-glass"></i>Search
+          <input class="form-control me-2 search-inp custom-input" type="search" placeholder="Search destinations"
+            aria-label="Search" />
+          <button class="btn" type="submit" 
+          style="background-color: #fe424d; color: white; border-radius: 25px;
+          height: 2rem;
+          text-align: center;
+          padding: 1rem;
+          align-items: center;
+          justify-content: center;
+          display: flex;">
+            <i class="fa-solid fa-magnifying-glass"></i>&nbsp;Search
           </button>
         </form>
       </div>
-      <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="/listings/new">Airbnb your home</a>
+      <% if (user) { %>
+        <div class="navbar-nav ms-auto">
+          <a class="nav-link d-flex align-items-center justify-content-center" href="/listings/new"
+            style="font-size:1rem;">Airbnb your home</a>
+          <% } else { %>
+            <div class="navbar-nav ms-auto">
+              <a class="nav-link d-flex align-items-center justify-content-center" href="/listings/new"
+                style="font-size:1rem;">Airbnb your home</a>
+              <% } %>
 
-        <% if (user) { %>
-        <!-- User profile dropdown -->
-        <div class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle d-flex align-items-center"
-            href="#"
-            id="userDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <!-- Circle with user's first letter or icon -->
-            <div
-              class="rounded-circle text-white d-flex justify-content-center align-items-center"
-              style="
-                width: 30px;
-                height: 30px;
-                background-color: #fe424d;
-                font-weight: bold;
-              "
-            >
-              <%= user.username[0].toUpperCase() %>
+
+                <% if (user) { %>
+                  <!-- User profile dropdown -->
+                  <div class="nav-item dropdown ms-2 me-2">
+                    <div class="rounded-circle  d-flex justify-content-center align-items-center position-relative "
+                      style="width: 40px;height: 50px;cursor: pointer;" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-placement="bottom"
+                      title="<%= user.username %>"
+                      onmouseover="this.style.transform='scale(1.05)';this.style.transition='transform 0.2s ease';"
+                      onmouseout="this.style.transform='scale(1)';this.style.transition='transform 0.2s ease';">
+                      <img
+                        src="<%= user.avatar && user.avatar.url ? user.avatar.url : 'https://res.cloudinary.com/dge7zdb1k/image/upload/v1748925711/wonderlust/f8ozf8gecoox7dgcussa.jpg' %>"
+                        alt="Profile Photo" 
+                        style="width: 100%;height: 100%;object-fit: cover;border-radius: 50%;" />
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                      <li>
+                        <span class="dropdown-item-text ml-0">
+                          Welcome, <%= user.username %>
+                        </span>
+                      </li>
+                      <li>
+                        <hr class="dropdown-divider" />
+                      </li>
+                      <li><a class="dropdown-item" href="/profile">Your Profile</a></li>
+                      <li><a class="dropdown-item" href="/my-bookings">Your Bookings</a></li>
+                      <li><a class="dropdown-item" href="/my-listings">Your Listings</a></li>
+                      <li><a class="dropdown-item" href="/favorites">Your Favorites</a></li>
+                      <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                      <li>
+                        <hr class="dropdown-divider" />
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="/logout" style="color: #fe424d">
+                          <b>Logout</b>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+
+
+                  <% } else { %>
+                    <a class="nav-link" href="/login" style="font-size:1rem;"><b>Login</b></a>
+                    <a class="nav-link" href="/signup" style="font-size:1rem;"><b>SignUp</b></a>
+                    <% } %>
             </div>
-          </a>
-          <ul
-            class="dropdown-menu dropdown-menu-end"
-            aria-labelledby="userDropdown"
-          >
-            <li>
-              <span class="dropdown-item-text ml-0"
-                >Welcome, <%= user.username %></span
-              >
-            </li>
-            <li><hr class="dropdown-divider" /></li>
-            <li>
-              <a class="dropdown-item" href="/logout" style="color: #fe424d"
-                ><b>Logout</b></a
-              >
-            </li>
-          </ul>
         </div>
-        <% } else { %>
-        <a class="nav-link" href="/login"><b>Login</b></a>
-        <a class="nav-link" href="/signup"><b>SignUp</b></a>
-        <% } %>
-      </div>
     </div>
-  </div>
 </nav>

@@ -10,15 +10,17 @@ const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const User = require("./models/user.js");
-const LocalStrategy = require("passport-local");
+const passportConfig = require("./config/passportConfig");
+const methodOverride = require("method-override");
 
 const app = express();
 
 const listingsRouter = require("./routes/listing.js");
 const reviewsRouter = require("./routes/review.js");
 const usersRouter = require("./routes/user.js");
+const bookingRouter = require("./routes/booking.js");
 
-const db_url = process.env.MONGO_URL;
+const db_url = process.env.MONGO_URI;
 mongoose
   .connect(db_url)
   .then(() => {
@@ -33,6 +35,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
+app.use(methodOverride("_method"));
 
 const store = MongoStore.create({
   mongoUrl: db_url,
@@ -63,9 +66,12 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// require("./googleConfig.js");
+
+passportConfig(passport);
+
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
   res.locals.user = req.user;
@@ -79,6 +85,7 @@ app.get("/", (req, res) => {
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/", usersRouter);
+app.use("/listings/:id", bookingRouter);
 
 app.listen(8080, () => {
   console.log("Server is running on port 8080");
