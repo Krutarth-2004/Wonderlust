@@ -162,7 +162,9 @@
     <tr>
       <th>Listing</th>
       <th>Check In</th>
+      <th>CheckIn Time</th>
       <th>Check Out</th>
+      <th>CheckOut Time</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -183,10 +185,13 @@
         <%= booking.checkIn ? new Date(booking.checkIn).toDateString() : "N/A"
         %>
       </td>
+      <td><%= booking.checkInTime %></td>
+
       <td>
         <%= booking.checkOut ? new Date(booking.checkOut).toDateString() : "N/A"
         %>
       </td>
+      <td><%= booking.checkOutTime %></td>
       <td>
         <form
           method="POST"
@@ -196,7 +201,7 @@
           <button
             type="button"
             class="cancel-btn"
-            style="border-radius:10px;"
+            style="border-radius: 10px"
             data-booking-id="<%= booking._id %>"
           >
             Cancel

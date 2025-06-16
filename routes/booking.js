@@ -14,11 +14,5 @@ router.get(
   wrapAsync(bookingController.checkAvailability)
 );
 
-router.get(
-  "/booked-dates",
-  isLoggedIn,
-  wrapAsync(bookingController.getBookedDates)
-);
-
 // Export the router
 module.exports = router;

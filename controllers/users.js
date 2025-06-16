@@ -51,11 +51,6 @@ module.exports.logout = (req, res) => {
   });
 };
 
-// module.exports.googleCallback = (req, res) => {
-//   req.flash("success", "Welcome back!");
-//   res.redirect(res.locals.redirectUrl || "/listings");
-// };
-
 module.exports.renderforgotPasswordForm = (req, res) => {
   res.render("users/forgotPassword", { hideHeaderFooter: true });
 };
@@ -217,7 +212,7 @@ module.exports.myListings = async (req, res) => {
     const listings = await Listing.find({ owner: req.user._id }).populate(
       "owner"
     );
-    res.render("users/myListings", { listings });
+    res.render("users/myListings", { allListings:listings });
   } catch (err) {
     console.error(err);
     req.flash("error", "Unable to fetch your listings.");
@@ -252,20 +247,25 @@ module.exports.addToFavorites = async (req, res) => {
 module.exports.removeFromFavorites = async (req, res) => {
   try {
     const listingId = req.params.id;
-    const user = await User.findById(req.user._id);
-    const index = user.favorites.indexOf(listingId);
-    if (index > -1) {
-      user.favorites.splice(index, 1);
-      await user.save();
-      req.flash("success", "Listing removed from favorites.");
-    } else {
-      req.flash("info", "Listing is not in your favorites.");
+    const user = req.user;
+
+    if (!user) {
+      req.flash("error", "You must be logged in to perform this action.");
+      return res.redirect("back");
     }
-    res.redirect(`/listings`);
+
+    // Remove listingId from user's favorites
+    user.favorites = user.favorites.filter(
+      (fav) => fav.toString() !== listingId
+    );
+    await user.save();
+
+    req.flash("success", "Removed from favorites.");
+    res.redirect(req.get("referer") || "/listings"); // Stay on same page
   } catch (err) {
     console.error(err);
-    req.flash("error", "Unable to remove listing from favorites.");
-    res.redirect("/listings");
+    req.flash("error", "Something went wrong.");
+    res.redirect("back");
   }
 };
 

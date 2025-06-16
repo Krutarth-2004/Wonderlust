@@ -5,7 +5,7 @@ const passport = require("passport");
 const { saveRedirectUrl } = require("../middleware.js");
 const userController = require("../controllers/users.js");
 const { isLoggedIn } = require("../middleware.js");
-const { cloudinary, storage } = require("../config/cloudConfig");
+const { storage } = require("../config/cloudConfig");
 const multer = require("multer");
 const upload = multer({ storage });
 
@@ -27,22 +27,6 @@ router
   );
 
 router.get("/logout", userController.logout);
-
-// router.get(
-//   "/google",
-//   passport.authenticate("google", {
-//     scope: ["profile", "email"],
-//     prompt: "select_account",
-//   })
-// );
-// router.get(
-//   "/google/callback",
-//   passport.authenticate("google", {
-//     failureRedirect: "/login",
-//     failureFlash: true,
-//   }),
-//   userController.googleCallback
-// );
 
 router
   .route("/forgot-password")

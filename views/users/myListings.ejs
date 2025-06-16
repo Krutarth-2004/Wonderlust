@@ -1,18 +1,64 @@
 <% layout("/layouts/boilerplate") %>
+<style>
+  .favorite-btn {
+    border: 2px solid #ff69b4;
+    background-color: #ffffff;
+    color: #ff69b4;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .listing-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .listing-card {
+    border: none;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .listing-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body {
+    padding: 0.5rem 0 0.5rem 0.5rem;
+  }
+
+  .favorite-btn:hover {
+    background-color: #ffe6f0;
+  }
+
+  .favorite-btn.favorited {
+    background-color: #ff69b4;
+    color: #ffffff;
+    border: none;
+  }
+</style>
 
 <div class="container mt-3 mb-3">
   <h2>Your Listings</h2>
 
-  <% if (listings.length === 0) { %>
+  <% if (allListings.length === 0) { %>
   <div
     class="alert alert-info mt-3"
-    style="background-color: white; color:#fe424d; border-color: #fe424d"
+    style="background-color: white; color: #fe424d; border-color: #fe424d"
   >
     You have no listings yet.
   </div>
   <% } else { %>
   <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
-    <% listings.forEach(listing => { %>
+    <% allListings.forEach((listing, index) => { %>
     <a href="/listings/<%= listing._id %>" class="listing-link">
       <div class="card col listing-card mt-3">
         <img
@@ -22,17 +68,40 @@
           alt="listing_image"
         />
         <div class="card-img-overlay"></div>
+
+        <!-- Heart Favorite Button -->
+        <form
+          action="/favorites/<%= listing._id %>"
+          method="POST"
+          class="favorite-form position-absolute top-0 end-0 m-2"
+        >
+          <% const isFavorite = user && Array.isArray(user.favorites) &&
+          user.favorites.includes(listing._id.toString()); %> <% if (isFavorite)
+          { %>
+          <button
+            type="submit"
+            class="favorite-btn favorited"
+            title="Remove from favorites"
+            formaction="/favorites/<%= listing._id %>?_method=DELETE"
+          >
+            <i class="fas fa-heart"></i>
+          </button>
+          <% } else { %>
+          <button type="submit" class="favorite-btn" title="Add to favorites">
+            <i class="far fa-heart"></i>
+          </button>
+          <% } %>
+        </form>
+
         <div class="card-body">
           <p class="card-text">
-            <!-- <strong>Title:</strong> -->
             <b><%= listing.title %></b><br />
-            <!-- <strong>Price:</strong> -->
-            &#8377; <%= listing.price.toLocaleString("en-IN") %>/night
+            &#8377; <%= Math.round(listing.price).toLocaleString("en-IN")
+            %>/night
           </p>
         </div>
       </div>
     </a>
-
     <% }) %>
   </div>
   <% } %>

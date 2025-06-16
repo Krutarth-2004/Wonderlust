@@ -31,7 +31,6 @@
             autofocus
             required
           />
-
         </div>
 
         <!-- Description -->
@@ -42,20 +41,80 @@
             name="description"
             class="form-control custom-input"
             required
-          ><%= listing.description %></textarea>
+          >
+<%= listing.description %></textarea
+          >
         </div>
 
         <!-- Price -->
-        <div class="mb-3">
-          <label for="price" class="form-label">Price:</label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            value="<%= listing.price %>"
-            class="form-control custom-input"
-            required
-          />
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <label for="price" class="form-label">Price:</label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value="<%= listing.price %>"
+              placeholder="Price of the listing"
+              class="form-control custom-input"
+              required
+            />
+            <div class="invalid-feedback">Price is required.</div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <label for="price" class="form-label">Maximum Occupancy:</label>
+            <input
+              type="number"
+              id="maxOccupancy"
+              name="maxOccupancy"
+              placeholder="Max. number of guests"
+              min="1"
+              value="<%= listing.maxOccupancy %>"
+              class="form-control custom-input"
+              required
+            />
+            <div class="invalid-feedback">MaxOccupancy is required.</div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <label for="category" class="form-label">Category:</label>
+          <select
+    id="category"
+    name="category"
+    class="form-select custom-input"
+    required
+  >
+    <option value="" disabled <%= !listing.category ? "selected" : "" %>>Select category</option>
+    <option value="flat/apartment" <%= listing.category === 'flat/apartment' ? 'selected' : '' %>>Flat/Apartment</option>
+    <option value="barn" <%= listing.category === 'barn' ? 'selected' : '' %>>Barn</option>
+    <option value="bed_and_breakfast" <%= listing.category === 'bed_and_breakfast' ? 'selected' : '' %>>Bed & Breakfast</option>
+    <option value="boat" <%= listing.category === 'boat' ? 'selected' : '' %>>Boat</option>
+    <option value="cabin" <%= listing.category === 'cabin' ? 'selected' : '' %>>Cabin</option>
+    <option value="campervan" <%= listing.category === 'campervan' ? 'selected' : '' %>>Campervan</option>
+    <option value="castle" <%= listing.category === 'castle' ? 'selected' : '' %>>Castle</option>
+    <option value="container" <%= listing.category === 'container' ? 'selected' : '' %>>Container</option>
+    <option value="condo" <%= listing.category === 'condo' ? 'selected' : '' %>>Condo</option>
+    <option value="earth_home" <%= listing.category === 'earth_home' ? 'selected' : '' %>>Earth Home</option>
+    <option value="farm" <%= listing.category === 'farm' ? 'selected' : '' %>>Farm</option>
+    <option value="guest_house" <%= listing.category === 'guest_house' ? 'selected' : '' %>>Guest House</option>
+    <option value="hotel" <%= listing.category === 'hotel' ? 'selected' : '' %>>Hotel</option>
+    <option value="house" <%= listing.category === 'house' ? 'selected' : '' %>>House</option>
+    <option value="houseboat" <%= listing.category === 'houseboat' ? 'selected' : '' %>>Houseboat</option>
+    <option value="loft" <%= listing.category === 'loft' ? 'selected' : '' %>>Loft</option>
+    <option value="shepherd_hut" <%= listing.category === 'shepherd_hut' ? 'selected' : '' %>>Shepherd’s Hut</option>
+    <option value="studio" <%= listing.category === 'studio' ? 'selected' : '' %>>Studio</option>
+    <option value="tent" <%= listing.category === 'tent' ? 'selected' : '' %>>Tent</option>
+    <option value="tiny_home" <%= listing.category === 'tiny_home' ? 'selected' : '' %>>Tiny Home</option>
+    <option value="tower" <%= listing.category === 'tower' ? 'selected' : '' %>>Tower</option>
+    <option value="townhouse" <%= listing.category === 'townhouse' ? 'selected' : '' %>>Townhouse</option>
+    <option value="tree_house" <%= listing.category === 'tree_house' ? 'selected' : '' %>>Tree House</option>
+    <option value="trullo" <%= listing.category === 'trullo' ? 'selected' : '' %>>Trullo</option>
+    <option value="villa" <%= listing.category === 'villa' ? 'selected' : '' %>>Villa</option>
+    <option value="windmill" <%= listing.category === 'windmill' ? 'selected' : '' %>>Windmill</option>
+    <option value="yurt" <%= listing.category === 'yurt' ? 'selected' : '' %>>Yurt</option>
+  </select>
+  <div class="invalid-feedback">Category is required.</div>
+          </div>
+
         </div>
 
         <!-- Address -->
@@ -69,31 +128,6 @@
             class="form-control custom-input"
             required
           />
-        </div>
-
-        <!-- Category Dropdown -->
-        <div class="mb-3">
-          <label for="category" class="form-label">Category:</label>
-          <select
-            id="category"
-            name="category"
-            class="form-select custom-input"
-            required
-          >
-            <% 
-              const categories = [
-                "house","flat/apartment","barn", "boat", "cabin","cottage","campervan", "castle",
-                "container", "earth_home", "farm", "guest_house", "hotel", 
-                "houseboat", "tiny_home", "tower", 
-                "tree_house", "windmill", "yurt"
-              ]; 
-            %>
-            <% categories.forEach(cat => { %>
-              <option value="<%= cat %>" <% if (listing.category === cat) { %> selected <% } %>>
-                <%= cat.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()) %>
-              </option>
-            <% }); %>
-          </select>
         </div>
 
         <!-- Existing Image -->

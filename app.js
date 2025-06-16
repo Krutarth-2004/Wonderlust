@@ -35,6 +35,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
+
 app.use(methodOverride("_method"));
 
 const store = MongoStore.create({
@@ -66,12 +67,8 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
-// require("./googleConfig.js");
 
 passportConfig(passport);
-
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
   res.locals.user = req.user;

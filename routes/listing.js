@@ -18,6 +18,7 @@ router
   );
 
 router.get("/new", isLoggedIn, listingsController.renderNewForm);
+router.get("/search", wrapAsync(listingsController.searchListings));
 
 router.get("/:id", wrapAsync(listingsController.showListing));
 

@@ -106,20 +106,14 @@
         <a class="nav-link" href="/listings" style="font-size:1.2rem;">Wonderlust</a>
       </div>
       <div class="d-flex align-items-center ms-auto">
-        <form class="d-flex align-items-center" role="search">
-          <input class="form-control me-2 search-inp custom-input" type="search" placeholder="Search destinations"
-            aria-label="Search" />
-          <button class="btn" type="submit" 
-          style="background-color: #fe424d; color: white; border-radius: 25px;
-          height: 2rem;
-          text-align: center;
-          padding: 1rem;
-          align-items: center;
-          justify-content: center;
-          display: flex;">
-            <i class="fa-solid fa-magnifying-glass"></i>&nbsp;Search
-          </button>
-        </form>
+        <form id="searchForm" class="d-flex align-items-center" role="search">
+  <input id="searchInput" class="form-control me-2 search-inp custom-input" type="search" placeholder="Search destinations" aria-label="Search" />
+  <button class="btn" type="submit"
+    style="background-color: #fe424d; color: white; border-radius: 25px; height: 2rem; display: flex; align-items: center; justify-content: center; padding: 1rem;">
+    <i class="fa-solid fa-magnifying-glass"></i>&nbsp;Search
+  </button>
+</form>
+
       </div>
       <% if (user) { %>
         <div class="navbar-nav ms-auto">
@@ -134,9 +128,9 @@
 
                 <% if (user) { %>
                   <!-- User profile dropdown -->
-                  <div class="nav-item dropdown ms-2 me-2">
+                  <div class="nav-item dropdown ms-1 me-2">
                     <div class="rounded-circle  d-flex justify-content-center align-items-center position-relative "
-                      style="width: 40px;height: 50px;cursor: pointer;" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-placement="bottom"
+                      style="width: 40px;height: 40px;cursor: pointer;" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-placement="bottom"
                       title="<%= user.username %>"
                       onmouseover="this.style.transform='scale(1.05)';this.style.transition='transform 0.2s ease';"
                       onmouseout="this.style.transform='scale(1)';this.style.transition='transform 0.2s ease';">

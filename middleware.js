@@ -1,5 +1,10 @@
 const ExpressError = require("./utils/ExpressError");
-const { listingSchema, reviewSchema } = require("./schema");
+const {
+  listingSchema,
+  reviewSchema,
+  userSchema,
+  bookingSchema,
+} = require("./schema");
 const Listing = require("./models/listing");
 const Review = require("./models/review");
 
@@ -39,6 +44,22 @@ module.exports.validateListing = (req, res, next) => {
 
 module.exports.validateReview = (req, res, next) => {
   const { error } = reviewSchema.validate(req.body);
+  if (error) {
+    let errMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(errMsg, 400);
+  } else next();
+};
+
+module.exports.validateUser = (req, res, next) => {
+  const { error } = userSchema.validate(req.body);
+  if (error) {
+    let errMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(errMsg, 400);
+  } else next();
+};
+
+module.exports.validateBooking = (req, res, next) => {
+  const { error } = bookingSchema.validate(req.body);
   if (error) {
     let errMsg = error.details.map((el) => el.message).join(",");
     throw new ExpressError(errMsg, 400);

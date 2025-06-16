@@ -1,4 +1,5 @@
 <% layout("/layouts/boilerplate") %>
+
 <style>
   .filters-container {
     position: relative;
@@ -174,6 +175,27 @@
     transition: all 0.3s ease;
     cursor: pointer;
   }
+  .listing-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .listing-card {
+    border: none;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .listing-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body {
+    padding: 0.5rem 0 0.5rem 0.5rem;
+  }
 
   .favorite-btn:hover {
     background-color: #ffe6f0;
@@ -303,17 +325,15 @@
   <br />
   <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
     <% allListings.forEach((listing, index) => { %>
-    <div class="card col listing-card mt-2 mb-3" data-index="<%= index %>">
-      <div class="position-relative">
-        <a href="/listings/<%= listing._id %>" class="listing-link">
-          <img
-            src="<%= listing.image.url %>"
-            class="card-img-top"
-            style="height: 20rem"
-            alt="listing_image"
-          />
-          <div class="card-img-overlay"></div>
-        </a>
+    <a href="/listings/<%= listing._id %>" class="listing-link">
+      <div class="card col listing-card mt-3" data-index="<%= index %>">
+        <img
+          src="<%= listing.image.url %>"
+          class="card-img-top"
+          style="height: 20rem"
+          alt="listing_image"
+        />
+        <div class="card-img-overlay"></div>
 
         <!-- Heart Favorite Button -->
         <form
@@ -338,23 +358,23 @@
           </button>
           <% } %>
         </form>
-      </div>
 
-      <div class="card-body">
-        <p class="card-text">
-          <b><%= listing.title %></b><br />
-          <% const totalPrice = listing.price * 1.18; %>
-          <span class="base-price"
-            >&#8377; <%= Math.round(listing.price).toLocaleString("en-IN")
-            %>/night</span
-          >
-          <span class="total-price" style="display: none"
-            >&#8377; <%= Math.round(totalPrice).toLocaleString("en-IN") %>/night
-            (incl. GST)</span
-          >
-        </p>
+        <div class="card-body">
+          <p class="card-text">
+            <b><%= listing.title %></b><br />
+            <% const totalPrice = listing.price * 1.18; %>
+            <span class="base-price"
+              >&#8377; <%= Math.round(listing.price).toLocaleString("en-IN")
+              %>/night</span
+            >
+            <span class="total-price" style="display: none"
+              >&#8377; <%= Math.round(totalPrice).toLocaleString("en-IN")
+              %>/night (incl. GST)</span
+            >
+          </p>
+        </div>
       </div>
-    </div>
+    </a>
     <% }) %>
   </div>
 </body>
@@ -411,49 +431,139 @@
 </script>
 
 <script>
-  const filterElements = document.querySelectorAll(".filter");
-  const listings = document.querySelectorAll(".listing-card");
-  const allListings = <%- JSON.stringify(allListings) %>; // make sure this is safe
+    const filterElements = document.querySelectorAll(".filter");
+    const listings = document.querySelectorAll(".listing-card");
+    const allListings = <%- JSON.stringify(allListings) %>; // make sure this is safe
 
-  // On page load, try to restore active filter from localStorage
-  let activeFilter = localStorage.getItem("selectedFilter") || null;
+    // On page load, try to restore active filter from localStorage
+    let activeFilter = localStorage.getItem("selectedFilter") || null;
 
-  function activateFilter(category) {
-    filterElements.forEach((filter) => {
-      if (filter.getAttribute("title") === category) {
-        filter.classList.add("active-filter");
-      } else {
-        filter.classList.remove("active-filter");
-      }
-    });
+    function activateFilter(category) {
+      filterElements.forEach((filter) => {
+        if (filter.getAttribute("title") === category) {
+          filter.classList.add("active-filter");
+        } else {
+          filter.classList.remove("active-filter");
+        }
+      });
 
-    listings.forEach((card) => {
-      const index = card.getAttribute("data-index");
-      const listingCategory = allListings[index].category;
-      if (!category || listingCategory === category) {
-        card.style.display = "";
-      } else {
-        card.style.display = "none";
-      }
-    });
-  }
+      const container = document.querySelector(".row.row-cols-lg-3");
+  container.innerHTML = ""; // Clear existing listings
 
-  // Restore filter on page load if any
-  if (activeFilter) {
-    activateFilter(activeFilter);
-  }
+  allListings.forEach((listing, index) => {
+    if (!category || listing.category === category) {
+      const wrapper = document.createElement("a");
+      wrapper.href = `/listings/${listing._id}`;
+      wrapper.className = "listing-link";
 
-  filterElements.forEach((filter) => {
-    filter.addEventListener("click", () => {
-      const category = filter.getAttribute("title");
-      if (activeFilter === category) {
-        activeFilter = null;
-        localStorage.removeItem("selectedFilter");
-      } else {
-        activeFilter = category;
-        localStorage.setItem("selectedFilter", category);
-      }
+      const card = document.createElement("div");
+      card.className = "card col listing-card mt-3";
+      card.setAttribute("data-index", index);
+
+      card.innerHTML = `
+        <img src="${listing.image.url}" class="card-img-top" style="height: 20rem" alt="listing_image" />
+        <div class="card-img-overlay"></div>
+        <div class="card-body">
+          <p class="card-text">
+            <b>${listing.title}</b><br />
+            <span class="base-price">&#8377; ${Math.round(listing.price).toLocaleString("en-IN")}/night</span>
+            <span class="total-price" style="display: none">&#8377; ${Math.round(listing.price * 1.18).toLocaleString("en-IN")}/night (incl. GST)</span>
+          </p>
+        </div>
+      `;
+
+      // Optional: Add favorite button logic here if needed
+      wrapper.appendChild(card);
+      container.appendChild(wrapper);
+    }
+  });
+
+    }
+
+    // Restore filter on page load if any
+    if (activeFilter) {
       activateFilter(activeFilter);
+    }
+
+    filterElements.forEach((filter) => {
+      filter.addEventListener("click", () => {
+        const category = filter.getAttribute("title");
+        if (activeFilter === category) {
+          activeFilter = null;
+          localStorage.removeItem("selectedFilter");
+        } else {
+          activeFilter = category;
+          localStorage.setItem("selectedFilter", category);
+        }
+        activateFilter(activeFilter);
+      });
     });
+</script>
+
+<script>
+  const searchInput = document.getElementById("searchInput");
+  const listingsContainer = document.querySelector(".row.row-cols-lg-3");
+
+  // Detect page reload due to empty search and focus input
+  window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("refocus") === "true") {
+      searchInput.focus();
+
+      // Remove the param from the URL without reloading
+      const url = new URL(window.location.href);
+      url.searchParams.delete("refocus");
+      window.history.replaceState({}, document.title, url.pathname);
+    }
+  });
+
+  searchInput.addEventListener("input", async () => {
+    const query = searchInput.value.trim();
+
+    if (!query) {
+      // Reload page with a flag to trigger focus
+      window.location.href = "/listings?refocus=true";
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `/listings/search?query=${encodeURIComponent(query)}`
+      );
+      const data = await res.json();
+
+      listingsContainer.innerHTML = "";
+
+      if (data.listings.length === 0) {
+        listingsContainer.innerHTML = `<p class="text-center">No listings found.</p>`;
+        return;
+      }
+
+      data.listings.forEach((listing) => {
+        const card = document.createElement("div");
+        card.className = "card col listing-card mt-2 mb-3";
+        card.innerHTML = `
+          <div class="position-relative">
+            <a href="/listings/${listing._id}" class="listing-link">
+              <img src="${
+                listing.image.url
+              }" class="card-img-top" style="height: 20rem" alt="listing_image" />
+              <div class="card-img-overlay"></div>
+            </a>
+          </div>
+          <div class="card-body">
+            <p class="card-text">
+              <b>${listing.title}</b><br />
+              <span class="base-price">&#8377; ${Math.round(
+                listing.price
+              ).toLocaleString("en-IN")}/night</span>
+            </p>
+          </div>
+        `;
+        listingsContainer.appendChild(card);
+      });
+    } catch (err) {
+      console.error("Error fetching listings", err);
+    }
   });
 </script>

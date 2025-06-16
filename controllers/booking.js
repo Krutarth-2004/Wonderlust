@@ -129,27 +129,3 @@ module.exports.checkAvailability = async (req, res) => {
     req.flash("error", "Failed to check availability.");
   }
 };
-
-module.exports.getBookedDates = async (req, res) => {
-  try {
-    const listingId = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(listingId)) {
-      return req.flash(
-        "error",
-        "Invalid listing ID. Please check the ID and try again."
-      );
-    }
-
-    const bookings = await Booking.find({ listing: listingId });
-    const bookedDates = bookings.map((b) => {
-      const checkIn = b.checkIn.toISOString().split("T")[0];
-      const checkOut = b.checkOut.toISOString().split("T")[0];
-      return `${checkIn} to ${checkOut}`;
-    });
-
-    res.json({ bookedDates });
-  } catch (err) {
-    console.error(err);
-    req.flash("error", "Failed to retrieve booked dates.");
-  }
-};

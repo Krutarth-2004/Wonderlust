@@ -75,3 +75,19 @@
     </div>
   </div>
 </div>
+
+<script>
+  function togglePassword() {
+    const passwordInput = document.getElementById("password"); // adjust as needed
+    const icon = document.getElementById("toggleIcon");
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+    } else {
+      passwordInput.type = "password";
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+    }
+  }
+</script>

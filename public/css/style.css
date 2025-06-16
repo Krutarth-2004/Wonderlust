@@ -9,41 +9,6 @@ body {
   flex: 1;
 }
 
-.listing-card {
-  border: none !important;
-  border-radius: 1rem !important;
-  margin-bottom: 1rem !important;
-  overflow: hidden; /* Ensures content stays inside rounded corners */
-}
-
-.card-body {
-  padding: 0 !important;
-}
-
-.listing-link {
-  text-decoration: none;
-}
-.listing-link:hover {
-  text-decoration: none;
-}
-.card-img-overlay {
-  opacity: 0;
-}
-.card-img-overlay:hover {
-  opacity: 0.2;
-  background-color: white;
-}
-
-.btns {
-  display: flex;
-}
-
-.show-card {
-  padding-left: 0;
-  padding-right: 0;
-  margin-top: 10px;
-}
-
 #map {
   height: 400px;
   width: 100%;

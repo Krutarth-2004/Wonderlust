@@ -5,6 +5,50 @@
     box-shadow: none; /* Removes default glow */
     outline: none; /* Removes default outline */
   }
+  .favorite-btn {
+    border: 2px solid #ff69b4;
+    background-color: #ffffff;
+    color: #ff69b4;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .listing-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .listing-card {
+    border: none;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .listing-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-body {
+    padding: 0.5rem 0 0.5rem 0.5rem;
+  }
+
+  .favorite-btn:hover {
+    background-color: #ffe6f0;
+  }
+
+  .favorite-btn.favorited {
+    background-color: #ff69b4;
+    color: #ffffff;
+    border: none;
+  }
 </style>
 <div class="container mt-3 mb-3">
   <h2>Your Favorites</h2>
@@ -12,45 +56,58 @@
   <% if (favorites.length === 0) { %>
   <div
     class="alert alert-info mt-3"
-    style="background-color: white; color: #fe424d; border-color: #fe424d"
+    style="background-color: white; color: #fe424d; border: 1px solid #fe424d"
   >
     You have no favorites yet.
   </div>
   <% } else { %>
   <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
-    <% favorites.forEach(favorite => { %>
+    <% favorites.forEach((favorite,index) => { %>
     <a href="/listings/<%= favorite._id %>" class="listing-link">
       <div class="card col listing-card mt-3">
         <img
           src="<%= favorite.image.url %>"
           class="card-img-top"
-          style="height: 20rem"
+          style="height: 20rem; object-fit: cover"
           alt="listing_image"
         />
-        <!-- <div class="card-img-overlay"></div> -->
-        <!-- <div class="card-body"> -->
-        <div class="d-flex justify-content-between align-items-center">
-          <b><%= favorite.title %></b>
-          <form
-            action="/favorites/<%= favorite._id %>?_method=DELETE"
-            method="POST"
+        <div class="card-img-overlay"></div>
+
+        <!-- Heart Favorite Button -->
+        <form
+          action="/favorites/<%= favorite._id %>"
+          method="POST"
+          class="favorite-form position-absolute top-0 end-0 m-2"
+        >
+          <% const isFavorite = user && Array.isArray(user.favorites) &&
+          user.favorites.includes(favorite._id.toString()); %> <% if
+          (isFavorite) { %>
+          <button
+            type="submit"
+            class="favorite-btn favorited"
+            title="Remove from favorites"
+            formaction="/favorites/<%= favorite._id %>?_method=DELETE"
           >
-            <button
-              type="submit"
-              class="btn btn-sm mt-3"
-              title="Remove from favorites"
-              style="color: #fe424d; border-color: #fe424d"
-            >
-              <i class="fas fa-heart-broken"></i>&nbsp; <b>Remove</b>
-            </button>
-          </form>
+            <i class="fas fa-heart"></i>
+          </button>
+          <% } else { %>
+          <button type="submit" class="favorite-btn" title="Add to favorites">
+            <i class="far fa-heart"></i>
+          </button>
+          <% } %>
+        </form>
+
+        <div class="card-body">
+          <p class="card-text">
+            <b><%= favorite.title %></b><br />
+            &#8377; <%= Math.round(favorite.price).toLocaleString("en-IN")
+            %>/night
+          </p>
         </div>
-        <div>&#8377; <%= favorite.price.toLocaleString("en-IN") %>/night</div>
-        <!-- </div> -->
       </div>
     </a>
-
     <% }) %>
   </div>
+
   <% } %>
 </div>

@@ -160,3 +160,13 @@ module.exports.deleteListing = async (req, res) => {
   req.flash("success", "Listing deleted successfully!");
   res.redirect("/listings");
 };
+
+module.exports.searchListings = async (req, res) => {
+  const { query } = req.query;
+  if (!query) return res.json({ listings: [] });
+
+  const regex = new RegExp(query, "i"); // case-insensitive match
+  const listings = await Listing.find({ title: regex });
+
+  res.json({ listings });
+};
