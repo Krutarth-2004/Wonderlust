@@ -6,7 +6,9 @@
     <!-- Login Form -->
     <form action="/login" method="POST" class="needs-validation" novalidate>
       <div class="mb-3">
-        <label for="usernameOrEmail" class="form-label">Username or Email</label>
+        <label for="usernameOrEmail" class="form-label"
+          >Username or Email</label
+        >
         <input
           type="text"
           class="form-control custom-input"
@@ -21,21 +23,10 @@
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
         <div class="input-group">
-          <input
-            type="password"
-            class="form-control custom-input"
-            id="password"
-            name="password"
-            required
-          />
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            id="togglePasswordBtn"
-            tabindex="-1"
-          >
-            <i id="toggleIcon" class="fa-solid fa-eye"></i>
-          </button>
+          <input type="password" class="form-control custom-input" id="loginPassword" name="password" required />
+  <button type="button" class="btn btn-outline-secondary toggle-password" data-target="loginPassword">
+    <i class="fa-solid fa-eye"></i>
+  </button>
           <div class="invalid-feedback">Password is required.</div>
         </div>
       </div>
@@ -47,12 +38,20 @@
       >
         Login
       </button>
-
-      <div class="text-center">
-        <a href="/forgot-password" style="color: #fe424d">Forgot Password?</a>
-        &nbsp; | &nbsp; Don't have an account? &nbsp;
-        <a href="/signup" style="color: #fe424d; text-decoration: none">SignUp here</a>
-      </div>
+      <br />
     </form>
+
+    
+    <div class="text-center">
+      <a href="/forgot-password" style="color: #fe424d">Forgot Password?</a>
+      &nbsp; | &nbsp; Don't have an account? &nbsp;<a
+        href="/signup"
+        style="color: #fe424d; text-decoration: none"
+      >
+        SignUp here</a
+      >
+    </div>
   </div>
 </div>
+
+<script src="/scripts/eyeToggle.js"></script>

@@ -1,13 +1,46 @@
+<style>
+  .toastify-center {
+    left: 30% !important;
+
+    transform: translateX(-50%) !important; /* only horizontal centering */
+    max-width: 400px !important;
+    z-index: 9999 !important; /* Make sure it stays on top */
+  }
+</style>
+
 <script>
-  <% if (success && success.length > 0) { %>
-    sessionStorage.setItem('flashMessage', JSON.stringify({
-      type: 'success',
-      text: <%- JSON.stringify(success[0]) %>
-    }));
-  <% } else if (error && error.length > 0) { %>
-    sessionStorage.setItem('flashMessage', JSON.stringify({
-      type: 'error',
-      text: <%- JSON.stringify(error[0]) %>
-    }));
-  <% } %>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Set the flash message in sessionStorage from server
+    <% if (success && success.length > 0) { %>
+      sessionStorage.setItem('flashMessage', JSON.stringify({
+        type: 'success',
+        text: '<%= success[0].replace(/'/g, "\\'") %>'
+      }));
+    <% } else if (error && error.length > 0) { %>
+      sessionStorage.setItem('flashMessage', JSON.stringify({
+        type: 'error',
+        text: '<%= error[0].replace(/'/g, "\\'") %>'
+      }));
+    <% } %>
+
+    // Now read and display it
+    const flash = sessionStorage.getItem('flashMessage');
+    if (flash) {
+      const { type, text } = JSON.parse(flash);
+      Toastify({
+        text: text,
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "center",
+        className: "toastify-center shadow rounded text-white",
+        backgroundColor:
+          type === "success"
+            ? "linear-gradient(to right, #198754, #45a049)"
+            : "linear-gradient(to right, #dc3545, #bb2d3b)",
+        stopOnFocus: true,
+      }).showToast();
+      sessionStorage.removeItem('flashMessage');
+    }
+  });
 </script>

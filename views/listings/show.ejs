@@ -1,6 +1,26 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="row">
+
+<link rel="stylesheet" href="/styles/rating.css" />
+<link rel="stylesheet" href="/styles/show.css" />
+
+<script>
+  // Pass listing data to the client-side script
+  const listingCoordinates = <%- JSON.stringify(listing.geometry.coordinates || []) %>;
+  const listingLocation = <%- JSON.stringify(listing.address || "") %>;
+  const listingtitle = <%- JSON.stringify(listing.title || "") %>;
+  window.listingData = {
+    _id: <%- JSON.stringify(listing._id) %>,
+    title: <%- JSON.stringify(listing.title) %>,
+    address: <%- JSON.stringify(listing.address) %>,
+    category: <%- JSON.stringify(listing.category) %>,
+    ownerUsername: <%- JSON.stringify(listing.owner.username) %>,
+    price: <%- JSON.stringify(listing.price) %>,
+    maxOccupancy: <%- JSON.stringify(listing.maxOccupancy) %>
+  };
+</script>
+
+<div class="show row">
   <div class="col-8 offset-3 mt-3">
     <h3><b><%= listing.title %></b></h3>
   </div>
@@ -8,6 +28,29 @@
   <div class="card col-6 offset-3 show-card listing-card">
     <br />
     <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image" height="450px" />
+    <% const isFavorite = user && Array.isArray(user.favorites) && user.favorites.includes(listing._id.toString()); %>
+  <form
+    action="/favorites/<%= listing._id %>"
+    method="POST"
+    class="favorite-form position-absolute m-2"
+    style="top: 20px; right: 20px; z-index: 10;"
+  >
+    <% if (isFavorite) { %>
+      <button
+        type="submit"
+        class="favorite-btn favorited"
+        title="Remove from favorites"
+        formaction="/favorites/<%= listing._id %>?_method=DELETE"
+      >
+        <i class="fas fa-heart"></i>
+      </button>
+    <% } else { %>
+      <button type="submit" class="favorite-btn" title="Add to favorites">
+        <i class="far fa-heart"></i>
+      </button>
+    <% } %>
+  </form>
+
 
     <div class="card-body">
       <h4 class="card-title mb-3 mt-2">
@@ -25,7 +68,7 @@
       <p class="card-text mt-3"><strong>Address:</strong> <%= listing.address %></p>
 
       <!-- Booking Form -->
-      <div class="col-6 mt-3">
+      <div class="col-6 mt-3 mb-3">
         <div class="card p-3" style="background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width:140%;">
           <h4 class="mb-3">Book Now</h4>
           <form id="bookingForm" action="/listings/<%= listing._id %>/book" method="POST" class="needs-validation" novalidate>
@@ -117,7 +160,7 @@
       <a href="/listings/<%= listing._id %>/edit" class="btn btn-danger col-1 offset-3">Edit</a>
 
       <form action="/listings/<%= listing._id %>/delete" method="POST" style="display: inline">
-        <button type="submit" class="btn btn-dark ms-2">Delete</button>
+        <button type="submit" class="delete-btn ms-2" >Delete</button>
       </form>
     </div>
   <% } %>
@@ -160,7 +203,7 @@
                 <strong>Comment:</strong> <%= review.comment %>
               </p>
               <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>/delete" method="POST">
-                <button class="btn btn-dark">Delete</button>
+                <button class="btn btn-dark" style="background-color:#000;color:#fff">Delete</button>
               </form>
             </div>
           </div>
@@ -179,26 +222,11 @@
 
   <div class="col-8 offset-3 mb-3">
     <h3>Where you'll be</h3>
-    <div id="map" style="height: 500px;"></div>
+    <div id="map" style="height: 500px;
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 15px;"></div>
   </div>
 </div>
 
-<!-- Hidden server error -->
-<% if (error && error.length > 0) { %>
-  <div id="serverError" style="display: none;">
-    <%= error[0] %>
-  </div>
-<% } %>
-
-<script>
-  window.listingData = {
-    _id: "<%= listing._id %>",
-    price: <%= listing.price %>,
-    maxOccupancy: <%= listing.maxOccupancy %>,
-    title: <%- JSON.stringify(listing.title || "") %>,
-    address: <%- JSON.stringify(listing.address || "") %>,
-    category: <%- JSON.stringify(listing.category || "") %>,
-    coordinates: <%- JSON.stringify(listing.geometry.coordinates || []) %>,
-    ownerUsername: <%- JSON.stringify(listing.owner.username || "") %>
-  };
-</script>
+<script src="/scripts/show.js"></script>

@@ -1,3 +1,6 @@
+
+<link rel="stylesheet" href="/styles/navbar.css" />
+
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand me-0" href="/listings"><i class="fa-solid fa-compass"></i></a>
@@ -13,7 +16,7 @@
   <input id="searchInput" class="form-control me-2 search-inp custom-input" type="search" placeholder="Search destinations" aria-label="Search" />
   <button class="btn" type="submit"
     style="background-color: #fe424d; color: white; border-radius: 25px; height: 2rem; display: flex; align-items: center; justify-content: center; padding: 1rem;">
-    <i class="fa-solid fa-magnifying-glass"></i>&nbsp;Search
+    <i class="fa-solid fa-magnifying-glass"></i>&nbsp;&nbsp;Search
   </button>
 </form>
 
@@ -21,11 +24,11 @@
       <% if (user) { %>
         <div class="navbar-nav ms-auto">
           <a class="nav-link d-flex align-items-center justify-content-center" href="/listings/new"
-            style="font-size:1rem;">Airbnb your home</a>
+            style="font-size:1rem;">Host with Wonderlust</a>
           <% } else { %>
             <div class="navbar-nav ms-auto">
               <a class="nav-link d-flex align-items-center justify-content-center" href="/listings/new"
-                style="font-size:1rem;">Airbnb your home</a>
+                style="font-size:1rem;">Host with Wonderlust</a>
               <% } %>
 
 
@@ -69,10 +72,11 @@
 
 
                   <% } else { %>
-                    <a class="nav-link" href="/login" style="font-size:1rem;"><b>Login</b></a>
-                    <a class="nav-link" href="/signup" style="font-size:1rem;"><b>SignUp</b></a>
+                    <a class="nav-link" href="/login" style="font-size:1rem;font-weight:600;"><b>Login</b></a>
+                    <a class="nav-link" href="/signup" style="font-size:1rem;"><strong>SignUp</strong></a>
                     <% } %>
             </div>
         </div>
     </div>
 </nav>
+<script src="/scripts/navbar.js"></script>

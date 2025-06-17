@@ -1,10 +1,11 @@
 <% layout("/layouts/boilerplate") %>
 
-
 <div class="row" style="margin-top: 80px">
   <div class="col-md-6 offset-md-3">
     <h2 class="text-center">Sign Up</h2>
+
     <form action="/signup" method="POST" class="needs-validation" novalidate>
+      <!-- Username -->
       <div class="mb-3">
         <label for="username" class="form-label">Username</label>
         <input
@@ -17,6 +18,8 @@
         />
         <div class="invalid-feedback">Username is required.</div>
       </div>
+
+      <!-- Email -->
       <div class="mb-3">
         <label for="email" class="form-label">Email</label>
         <input
@@ -28,6 +31,8 @@
         />
         <div class="invalid-feedback">Email is required.</div>
       </div>
+
+      <!-- Password with toggle -->
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
         <div class="input-group has-validation">
@@ -40,16 +45,17 @@
           />
           <button
             type="button"
-            class="btn btn-outline-secondary"
-            onclick="togglePassword()"
+            class="btn btn-outline-secondary toggle-password"
+            data-target="password"
             tabindex="-1"
           >
-            <i id="toggleIcon" class="fa-solid fa-eye"></i>
+            <i class="fa-solid fa-eye"></i>
           </button>
           <div class="invalid-feedback">Password is required.</div>
         </div>
       </div>
 
+      <!-- Submit -->
       <button
         type="submit"
         class="btn"
@@ -58,14 +64,17 @@
         Sign Up
       </button>
     </form>
+
+    <!-- Login Link -->
     <div class="mt-3 text-center">
       <p>
         Already have an account?
         <a href="/login" style="color: #fe424d; text-decoration: none"
-          >&nbsp; Login here
-        </a>
+          >&nbsp;Login here</a
+        >
       </p>
     </div>
   </div>
 </div>
 
+<script src="/scripts/eyeToggle.js"></script>

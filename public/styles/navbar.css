@@ -1,4 +1,4 @@
-.search-btn {
+.navbar .search-btn {
   background-color: #fe424d;
   color: #fff;
   border-radius: 25px;
@@ -10,12 +10,12 @@
   display: flex;
 }
 
-.search-btn i {
+.navbar .search-btn i {
   display: inline;
   margin-right: 0.25rem;
 }
 
-.search-inp {
+.navbar .search-inp {
   padding: 0.5rem;
   font-size: 0.9rem;
   border-radius: 25px;
@@ -23,51 +23,50 @@
   text-align: center;
 }
 
-
-
 .navbar {
   height: 4rem;
   background-color: white;
 }
 
-.fa-compass {
+.navbar .fa-compass {
   color: #fe424d;
   font-size: 2rem;
 }
 
-.nav-link {
+.navbar .nav-link {
   color: #fe424d !important;
   font-size: 1.5rem;
   justify-content: center;
   display: flex;
   align-items: center;
+  font-weight: 600;
 }
 
-.f-info-links,
-.f-info-socials,
-.f-info-brand {
+.navbar .f-info-links,
+.navbar .f-info-socials,
+.navbar .f-info-brand {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.f-info-links a {
+.navbar .f-info-links a {
   text-decoration: none;
   color: #222222;
 }
 
-.f-info-links a:hover {
+.navbar .f-info-links a:hover {
   text-decoration: underline;
   color: #fe424d;
 }
 
-.f-info-socials i {
+.navbar .f-info-socials i {
   font-size: 1.3rem;
   margin-right: 1rem;
 }
 
-.f-info {
+.navbar .f-info {
   text-align: center;
   background-color: #f8f9fa;
   height: 8rem;
@@ -75,4 +74,10 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: space-evenly;
+}
+
+.navbar .custom-input:focus {
+  border-color: #fe424d; /* Airbnb red shade or your preferred color */
+  box-shadow: none; /* Removes default glow */
+  outline: none; /* Removes default outline */
 }

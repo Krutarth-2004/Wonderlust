@@ -1,135 +1,141 @@
 <% layout("/layouts/boilerplate") %>
+<style>
+  /* Custom border color on input focus */
+  .custom-input:focus {
+    border-color: #fe424d; /* Airbnb red shade or your preferred color */
+    box-shadow: none; /* Removes default glow */
+    outline: none; /* Removes default outline */
+  }
+</style>
+  <div class="row">
+    <div class="col-8 offset-2">
+      <br />
+      <h3>Create a New Listing</h3>
 
-<div class="row">
-  <div class="col-8 offset-2">
-    <br />
-    <h3>Create a New Listing</h3>
-
-    <form
-      action="/listings"
-      method="POST"
-      novalidate
-      class="needs-validation"
-      enctype="multipart/form-data"
-    >
-      <div class="mb-3">
-        <label for="title" class="form-label">Title:</label>
-        <input
-          type="text"
-          placeholder="Title of the listing"
-          id="title"
-          name="title"
-          class="form-control custom-input"
-          autofocus
-          required
-        />
-        <div class="invalid-feedback">Title is required.</div>
-      </div>
-
-      <div class="mb-3">
-        <label for="description" class="form-label">Description:</label>
-        <textarea
-          id="description"
-          name="description"
-          placeholder="Description of the listing"
-          class="form-control custom-input"
-          required
-        ></textarea>
-        <div class="invalid-feedback">Description is required.</div>
-      </div>
-
-      <div class="row">
-        <div class="mb-3 col-md-4">
-          <label for="price" class="form-label">Price:</label>
+      <form
+        action="/listings"
+        method="POST"
+        novalidate
+        class="needs-validation"
+        enctype="multipart/form-data"
+      >
+        <div class="mb-3">
+          <label for="title" class="form-label">Title:</label>
           <input
-            type="number"
-            id="price"
-            name="price"
-            placeholder="Price of the listing"
+            type="text"
+            placeholder="Title of the listing"
+            id="title"
+            name="title"
+            class="form-control custom-input"
+            autofocus
+            required
+          />
+          <div class="invalid-feedback">Title is required.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Description:</label>
+          <textarea
+            id="description"
+            name="description"
+            placeholder="Description of the listing"
+            class="form-control custom-input"
+            required
+          ></textarea>
+          <div class="invalid-feedback">Description is required.</div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <label for="price" class="form-label">Price:</label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              placeholder="Price of the listing"
+              class="form-control custom-input"
+              required
+            />
+            <div class="invalid-feedback">Price is required.</div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <label for="price" class="form-label">Maximum Occupancy:</label>
+            <input
+              type="number"
+              id="maxOccupancy"
+              name="maxOccupancy"
+              placeholder="Max. number of guests"
+              min="1"
+              class="form-control custom-input"
+              required
+            />
+            <div class="invalid-feedback">MaxOccupancy is required.</div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <label for="category" class="form-label">Category:</label>
+            <select
+              id="category"
+              name="category"
+              class="form-select custom-input"
+              required
+            >
+              <option value="" selected>Select category</option>
+              <option value="house">House</option>
+              <option value="flat/apartment">Flat/Apartment</option>
+              <option value="barn">Barn</option>
+              <option value="boat">Boat</option>
+              <option value="cabin">Cabin</option>
+              <option value="campervan">Campervan</option>
+              <option value="castle">Castle</option>
+              <option value="container">Container</option>
+              <option value="cottage">Cottage</option>
+              <option value="earth_home">Earth Home</option>
+              <option value="farm">Farm</option>
+              <option value="guest_house">Guest House</option>
+              <option value="hotel">Hotel</option>
+              <option value="houseboat">Houseboat</option>
+              <option value="tiny_home">Tiny Home</option>
+              <option value="tower">Tower</option>
+              <option value="tree_house">Tree House</option>
+              <option value="windmill">Windmill</option>
+              <option value="yurt">Yurt</option>
+            </select>
+            <div class="invalid-feedback">Category is required.</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="address" class="form-label">Address:</label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            placeholder="Address of the listing"
             class="form-control custom-input"
             required
           />
-          <div class="invalid-feedback">Price is required.</div>
+          <div class="invalid-feedback">Address is required.</div>
         </div>
-        <div class="mb-3 col-md-4">
-          <label for="maxOccupancy" class="form-label">Maximum Occupancy:</label>
+
+        <div class="mb-3">
+          <label for="image" class="form-label">Upload Image</label>
           <input
-            type="number"
-            id="maxOccupancy"
-            name="maxOccupancy"
-            placeholder="Max. number of guests"
-            min="1"
+            type="file"
+            id="image"
+            name="image"
             class="form-control custom-input"
-            required
           />
-          <div class="invalid-feedback">MaxOccupancy is required.</div>
         </div>
-        <div class="mb-3 col-md-4">
-          <label for="category" class="form-label">Category:</label>
-          <select
-            id="category"
-            name="category"
-            class="form-select custom-input"
-            required
+
+        <div class="mb-3">
+          <button
+            type="submit"
+            class="btn"
+            style="background-color: #fe424d; color: white; border: none"
           >
-            <option value="" selected>Select category</option>
-            <option value="house">House</option>
-            <option value="flat/apartment">Flat/Apartment</option>
-            <option value="barn">Barn</option>
-            <option value="boat">Boat</option>
-            <option value="cabin">Cabin</option>
-            <option value="campervan">Campervan</option>
-            <option value="castle">Castle</option>
-            <option value="container">Container</option>
-            <option value="cottage">Cottage</option>
-            <option value="earth_home">Earth Home</option>
-            <option value="farm">Farm</option>
-            <option value="guest_house">Guest House</option>
-            <option value="hotel">Hotel</option>
-            <option value="houseboat">Houseboat</option>
-            <option value="tiny_home">Tiny Home</option>
-            <option value="tower">Tower</option>
-            <option value="tree_house">Tree House</option>
-            <option value="windmill">Windmill</option>
-            <option value="yurt">Yurt</option>
-          </select>
-          <div class="invalid-feedback">Category is required.</div>
+            Create Listing
+          </button>
         </div>
-      </div>
-
-      <div class="mb-3">
-        <label for="address" class="form-label">Address:</label>
-        <input
-          type="text"
-          id="address"
-          name="address"
-          placeholder="Address of the listing"
-          class="form-control custom-input"
-          required
-        />
-        <div class="invalid-feedback">Address is required.</div>
-      </div>
-
-      <div class="mb-3">
-        <label for="image" class="form-label">Upload Image</label>
-        <input
-          type="file"
-          id="image"
-          name="image"
-          accept="image/*"
-          class="form-control custom-input"
-        />
-      </div>
-
-      <div class="mb-3">
-        <button
-          type="submit"
-          class="btn"
-          style="background-color: #fe424d; color: white; border: none"
-        >
-          Create Listing
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>

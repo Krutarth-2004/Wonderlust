@@ -1,32 +1,32 @@
-.footer-custom {
+.footer {
   background-color: #f8f9fa; /* Off-white background */
   color: #000; /* Black text */
 }
 
-.footer-custom a {
+.footer a {
   color: #000; /* Black text */
   text-decoration: none;
 }
 
-.footer-custom a:hover {
+.footer a:hover {
   color: #fe424d; /* Airbnb red on hover */
   text-decoration: underline;
 }
 
-.footer-custom i {
+.footer i {
   font-size: 1.25rem;
   color: #000;
 }
 
-.footer-custom i:hover {
+.footer i:hover {
   color: #fe424d;
 }
-.btn {
+.footer .btn {
   border: 1px solid #fe424d;
   color: #000;
   background-color: white;
 }
-.btn:hover {
+.footer .btn:hover {
   background-color: #fe424d;
   color: white;
 }

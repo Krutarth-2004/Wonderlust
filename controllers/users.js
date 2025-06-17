@@ -20,7 +20,7 @@ module.exports.signup = async (req, res, next) => {
 
     req.login(registeredUser, (err) => {
       if (err) return next(err);
-      req.flash("success", "Welcome to Wonderlust!");
+      req.flash("success", "Welcome back!");
       res.redirect("/listings");
     });
   } catch (e) {
@@ -213,15 +213,15 @@ module.exports.addToFavorites = async (req, res) => {
       user.favorites.push(listingId);
       await user.save();
       req.flash("success", "Listing added to favorites.");
+      res.redirect(req.get("referer") || "/listings");
     } else {
       req.flash("info", "Listing already in favorites.");
+      res.redirect(req.get("referer") || "/listings");
     }
-
-    res.redirect(`/listings`);
   } catch (err) {
     console.error("Add to favorites error:", err);
     req.flash("error", "Unable to add to favorites.");
-    res.redirect("/listings");
+    res.redirect(req.get("referer") || "/listings");
   }
 };
 

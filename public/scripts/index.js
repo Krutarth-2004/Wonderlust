@@ -19,19 +19,18 @@ if (taxSwitch) {
   });
 }
 
-// ========= Filter Scroll Buttons =========
+// ========= Scroll Buttons =========
 const filters = document.getElementById("filters");
 const btnLeft = document.getElementById("scroll-left");
 const btnRight = document.getElementById("scroll-right");
 
 if (filters && btnLeft && btnRight) {
-  btnLeft.addEventListener("click", () => {
-    filters.scrollBy({ left: -150, behavior: "smooth" });
-  });
-
-  btnRight.addEventListener("click", () => {
-    filters.scrollBy({ left: 150, behavior: "smooth" });
-  });
+  btnLeft.addEventListener("click", () =>
+    filters.scrollBy({ left: -150, behavior: "smooth" })
+  );
+  btnRight.addEventListener("click", () =>
+    filters.scrollBy({ left: 150, behavior: "smooth" })
+  );
 
   function updateButtons() {
     btnLeft.disabled = filters.scrollLeft <= 0;
@@ -41,43 +40,37 @@ if (filters && btnLeft && btnRight) {
 
   filters.addEventListener("scroll", updateButtons);
   window.addEventListener("resize", updateButtons);
-
   updateButtons();
 }
 
-// ========= Filter Activation & Listing Renderer =========
-const filterElements = document.querySelectorAll(".filter");
-const allListingsData = window.allListingsData || [];
+// ========= Render Listing Card =========
+function createListingCard(listing, index) {
+  const isFavorite = window.userFavorites?.includes(listing._id);
 
-let activeFilter = localStorage.getItem("selectedFilter") || null;
+  const totalPrice = listing.price * 1.18;
 
-function activateFilter(category) {
-  filterElements.forEach((filter) => {
-    if (filter.getAttribute("title") === category) {
-      filter.classList.add("active-filter");
-    } else {
-      filter.classList.remove("active-filter");
-    }
-  });
-
-  const container = document.querySelector(".row.row-cols-lg-3");
-  container.innerHTML = "";
-
-  allListingsData.forEach((listing, index) => {
-    if (!category || listing.category === category) {
-      const wrapper = document.createElement("a");
-      wrapper.href = `/listings/${listing._id}`;
-      wrapper.className = "listing-link";
-
-      const card = document.createElement("div");
-      card.className = "card col listing-card mt-3";
-      card.setAttribute("data-index", index);
-
-      card.innerHTML = `
+  return `
+    <a href="/listings/${listing._id}" class="listing-link">
+      <div class="card col listing-card mt-3" data-index="${index}">
         <img src="${
           listing.image.url
         }" class="card-img-top" style="height: 20rem" alt="listing_image" />
         <div class="card-img-overlay"></div>
+
+        <form action="/favorites/${
+          listing._id
+        }" method="POST" class="favorite-form position-absolute top-0 end-0 m-2">
+          ${
+            isFavorite
+              ? `<button type="submit" class="favorite-btn favorited" title="Remove from favorites" formaction="/favorites/${listing._id}?_method=DELETE">
+                  <i class="fas fa-heart"></i>
+                </button>`
+              : `<button type="submit" class="favorite-btn" title="Add to favorites">
+                  <i class="far fa-heart"></i>
+                </button>`
+          }
+        </form>
+
         <div class="card-body">
           <p class="card-text">
             <b>${listing.title}</b><br />
@@ -85,14 +78,34 @@ function activateFilter(category) {
               listing.price
             ).toLocaleString("en-IN")}/night</span>
             <span class="total-price" style="display: none">&#8377; ${Math.round(
-              listing.price * 1.18
+              totalPrice
             ).toLocaleString("en-IN")}/night (incl. GST)</span>
           </p>
         </div>
-      `;
+      </div>
+    </a>
+  `;
+}
 
-      wrapper.appendChild(card);
-      container.appendChild(wrapper);
+// ========= Filter Activation =========
+const filterElements = document.querySelectorAll(".filter");
+const allListingsData = window.allListingsData || [];
+let activeFilter = localStorage.getItem("selectedFilter") || null;
+
+function activateFilter(category) {
+  filterElements.forEach((filter) => {
+    filter.classList.toggle(
+      "active-filter",
+      filter.getAttribute("title") === category
+    );
+  });
+
+  const container = document.querySelector(".row.row-cols-lg-3");
+  container.innerHTML = "";
+
+  allListingsData.forEach((listing, index) => {
+    if (!category || listing.category === category) {
+      container.innerHTML += createListingCard(listing, index);
     }
   });
 }
@@ -115,7 +128,7 @@ if (filterElements.length) {
   });
 }
 
-// ========= Search Bar Script =========
+// ========= Search Bar =========
 const searchInput = document.getElementById("searchInput");
 const listingsContainer = document.querySelector(".row.row-cols-lg-3");
 
@@ -143,7 +156,6 @@ if (searchInput) {
         `/listings/search?query=${encodeURIComponent(query)}`
       );
       const data = await res.json();
-
       listingsContainer.innerHTML = "";
 
       if (data.listings.length === 0) {
@@ -151,28 +163,8 @@ if (searchInput) {
         return;
       }
 
-      data.listings.forEach((listing) => {
-        const card = document.createElement("div");
-        card.className = "card col listing-card mt-2 mb-3";
-        card.innerHTML = `
-          <div class="position-relative">
-            <a href="/listings/${listing._id}" class="listing-link">
-              <img src="${
-                listing.image.url
-              }" class="card-img-top" style="height: 20rem" alt="listing_image" />
-              <div class="card-img-overlay"></div>
-            </a>
-          </div>
-          <div class="card-body">
-            <p class="card-text">
-              <b>${listing.title}</b><br />
-              <span class="base-price">&#8377; ${Math.round(
-                listing.price
-              ).toLocaleString("en-IN")}/night</span>
-            </p>
-          </div>
-        `;
-        listingsContainer.appendChild(card);
+      data.listings.forEach((listing, index) => {
+        listingsContainer.innerHTML += createListingCard(listing, index);
       });
     } catch (err) {
       console.error("Error fetching listings", err);

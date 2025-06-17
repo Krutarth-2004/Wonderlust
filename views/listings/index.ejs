@@ -1,5 +1,7 @@
 <% layout("/layouts/boilerplate") %>
 
+<link rel="stylesheet" href="/styles/index.css" />
+
   <div class="filters-container">
     <button
       class="scroll-button scroll-left"
@@ -114,7 +116,7 @@
   </div>
 
   <br />
-  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+  <div class="homepage row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
     <% allListings.forEach((listing, index) => { %>
     <a href="/listings/<%= listing._id %>" class="listing-link">
       <div class="card col listing-card mt-3" data-index="<%= index %>">
@@ -172,4 +174,7 @@
 
 <script>
   window.allListingsData = <%- JSON.stringify(allListings) %>;
+  window.userFavorites = <%- JSON.stringify(user?.favorites || []) %>;
 </script>
+
+<script src="/scripts/index.js"></script>

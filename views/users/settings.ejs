@@ -1,10 +1,11 @@
 <% layout('layouts/boilerplate') %>
 
-
 <div class="container mt-5" style="max-width: 480px">
   <h2 class="mb-4">Change Password</h2>
 
   <form action="/settings" method="POST" class="needs-validation" novalidate>
+    
+    <!-- Current Password -->
     <div class="mb-3">
       <label for="currentPassword" class="form-label">Current Password</label>
       <div class="input-group">
@@ -18,16 +19,17 @@
         />
         <button
           type="button"
-          class="btn btn-outline-secondary"
-          onclick="togglePassword()"
+          class="btn btn-outline-secondary toggle-password"
+          data-target="currentPassword"
           tabindex="-1"
         >
-          <i id="toggleIcon" class="fa-solid fa-eye"></i>
+          <i class="fa-solid fa-eye"></i>
         </button>
         <div class="invalid-feedback">Current Password is required.</div>
       </div>
     </div>
 
+    <!-- New Password -->
     <div class="mb-3">
       <label for="newPassword" class="form-label">New Password</label>
       <div class="input-group">
@@ -40,20 +42,19 @@
         />
         <button
           type="button"
-          class="btn btn-outline-secondary"
-          onclick="togglePassword()"
+          class="btn btn-outline-secondary toggle-password"
+          data-target="newPassword"
           tabindex="-1"
         >
-          <i id="toggleIcon" class="fa-solid fa-eye"></i>
+          <i class="fa-solid fa-eye"></i>
         </button>
         <div class="invalid-feedback">New Password is required.</div>
       </div>
     </div>
 
+    <!-- Confirm Password -->
     <div class="mb-3">
-      <label for="confirmPassword" class="form-label"
-        >Confirm new Password</label
-      >
+      <label for="confirmPassword" class="form-label">Confirm New Password</label>
       <div class="input-group">
         <input
           type="password"
@@ -64,11 +65,11 @@
         />
         <button
           type="button"
-          class="btn btn-outline-secondary"
-          onclick="togglePassword()"
+          class="btn btn-outline-secondary toggle-password"
+          data-target="confirmPassword"
           tabindex="-1"
         >
-          <i id="toggleIcon" class="fa-solid fa-eye"></i>
+          <i class="fa-solid fa-eye"></i>
         </button>
         <div class="invalid-feedback">Password is required.</div>
       </div>
@@ -83,3 +84,5 @@
     </button>
   </form>
 </div>
+
+<script src="/scripts/eyeToggle.js"></script>
