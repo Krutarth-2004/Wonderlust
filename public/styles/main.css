@@ -15,3 +15,8 @@ body {
   border-radius: 10px;
   margin-top: 15px;
 }
+.custom-input:focus {
+  border-color: #fe424d; /* Airbnb red shade or your preferred color */
+  box-shadow: none; /* Removes default glow */
+  outline: none; /* Removes default outline */
+}

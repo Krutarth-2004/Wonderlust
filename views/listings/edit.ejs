@@ -1,153 +1,128 @@
 <% layout("/layouts/boilerplate") %>
-<style>
-  /* Custom border color on input focus */
-  .custom-input:focus {
-    border-color: #fe424d; /* Airbnb red shade or your preferred color */
-    box-shadow: none; /* Removes default glow */
-    outline: none; /* Removes default outline */
-  }
-</style>
-<body>
-  <div class="row">
-    <div class="col-8 offset-2">
-      <br />
-      <h3>Edit Listing</h3>
-    </div>
-    <div class="col-8 offset-2">
-      <form
-        action="/listings/<%= listing._id %>/edit"
-        method="POST"
-        enctype="multipart/form-data"
-      >
-        <!-- Title -->
-        <div class="mb-3">
-          <label for="title" class="form-label">Title:</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value="<%= listing.title %>"
-            class="form-control custom-input"
-            autofocus
-            required
-          />
-        </div>
 
-        <!-- Description -->
-        <div class="mb-3">
-          <label for="description" class="form-label">Description:</label>
-          <textarea
-            id="description"
-            name="description"
-            class="form-control custom-input"
-            required
-          >
-<%= listing.description %></textarea
-          >
-        </div>
-
-        <!-- Price -->
-        <div class="row">
-          <div class="mb-3 col-md-4">
-            <label for="price" class="form-label">Price:</label>
-            <input
-              type="number"
-              id="price"
-              name="price"
-              value="<%= listing.price %>"
-              placeholder="Price of the listing"
-              class="form-control custom-input"
-              required
-            />
-            <div class="invalid-feedback">Price is required.</div>
-          </div>
-          <div class="mb-3 col-md-4">
-            <label for="price" class="form-label">Maximum Occupancy:</label>
-            <input
-              type="number"
-              id="maxOccupancy"
-              name="maxOccupancy"
-              placeholder="Max. number of guests"
-              min="1"
-              value="<%= listing.maxOccupancy %>"
-              class="form-control custom-input"
-              required
-            />
-            <div class="invalid-feedback">MaxOccupancy is required.</div>
-          </div>
-          <div class="mb-3 col-md-4">
-            <label for="category" class="form-label">Category:</label>
-          <select
-    id="category"
-    name="category"
-    class="form-select custom-input"
-    required
-  >
-    <option value="" disabled <%= !listing.category ? "selected" : "" %>>Select category</option>
-    <option value="house" <%= listing.category === 'house' ? 'selected' : '' %>>House</option>
-    <option value="flat/apartment" <%= listing.category === 'flat/apartment' ? 'selected' : '' %>>Flat/Apartment</option>
-    <option value="barn" <%= listing.category === 'barn' ? 'selected' : '' %>>Barn</option>
-    <option value="boat" <%= listing.category === 'boat' ? 'selected' : '' %>>Boat</option>
-    <option value="cabin" <%= listing.category === 'cabin' ? 'selected' : '' %>>Cabin</option>
-    <option value="campervan" <%= listing.category === 'campervan' ? 'selected' : '' %>>Campervan</option>
-    <option value="castle" <%= listing.category === 'castle' ? 'selected' : '' %>>Castle</option>
-    <option value="container" <%= listing.category === 'container' ? 'selected' : '' %>>Container</option>
-    <option value="cottage" <%= listing.category === 'cottage' ? 'selected' : '' %>>Cottage</option>
-    <option value="earth_home" <%= listing.category === 'earth_home' ? 'selected' : '' %>>Earth Home</option>
-    <option value="farm" <%= listing.category === 'farm' ? 'selected' : '' %>>Farm</option>
-    <option value="guest_house" <%= listing.category === 'guest_house' ? 'selected' : '' %>>Guest House</option>
-    <option value="hotel" <%= listing.category === 'hotel' ? 'selected' : '' %>>Hotel</option>
-    <option value="houseboat" <%= listing.category === 'houseboat' ? 'selected' : '' %>>Houseboat</option>
-    <option value="tiny_home" <%= listing.category === 'tiny_home' ? 'selected' : '' %>>Tiny Home</option>
-    <option value="tower" <%= listing.category === 'tower' ? 'selected' : '' %>>Tower</option>
-    <option value="tree_house" <%= listing.category === 'tree_house' ? 'selected' : '' %>>Tree House</option>
-    <option value="windmill" <%= listing.category === 'windmill' ? 'selected' : '' %>>Windmill</option>
-    <option value="yurt" <%= listing.category === 'yurt' ? 'selected' : '' %>>Yurt</option>
-  </select>
-  <div class="invalid-feedback">Category is required.</div>
-          </div>
-
-        </div>
-
-        <!-- Address -->
-        <div class="mb-3">
-          <label for="address" class="form-label">Address:</label>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            value="<%= listing.address %>"
-            class="form-control custom-input"
-            required
-          />
-        </div>
-
-        <!-- Existing Image -->
-        <div class="mb-3">
-          <p>Original Image:</p>
-          <img src="<%= listing.image.url %>" height="350px" />
-        </div>
-
-        <!-- Upload Image -->
-        <div class="mb-3">
-          <label for="image" class="form-label">Upload New Image:</label>
-          <input
-            type="file"
-            id="image"
-            name="image"
-            class="form-control custom-input"
-          />
-        </div>
-
-        <!-- Submit -->
-        <button
-          type="submit"
-          class="btn mb-3"
-          style="background-color: #fe424d; color: white; border: none"
-        >
-          Update Listing
-        </button>
-      </form>
-    </div>
+<div class="row">
+  <div class="col-8 offset-2">
+    <br />
+    <h3>Edit Listing</h3>
   </div>
-</body>
+  <div class="col-8 offset-2">
+    <form
+      action="/listings/<%= listing._id %>/edit"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <!-- Title -->
+      <div class="mb-3">
+        <label for="title" class="form-label">Title:</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value="<%= listing.title %>"
+          class="form-control custom-input"
+          autofocus
+          required
+        />
+      </div>
+
+      <!-- Description -->
+      <div class="mb-3">
+        <label for="description" class="form-label">Description:</label>
+        <textarea
+          id="description"
+          name="description"
+          class="form-control custom-input"
+          required
+        ><%= listing.description %></textarea>
+      </div>
+
+      <!-- Price, Max Occupancy, Category -->
+      <div class="row">
+        <div class="mb-3 col-md-4">
+          <label for="price" class="form-label">Price:</label>
+          <input
+            type="number"
+            id="price"
+            name="price"
+            value="<%= listing.price %>"
+            placeholder="Price of the listing"
+            class="form-control custom-input"
+            required
+          />
+          <div class="invalid-feedback">Price is required.</div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label for="maxOccupancy" class="form-label">Maximum Occupancy:</label>
+          <input
+            type="number"
+            id="maxOccupancy"
+            name="maxOccupancy"
+            placeholder="Max. number of guests"
+            min="1"
+            value="<%= listing.maxOccupancy %>"
+            class="form-control custom-input"
+            required
+          />
+          <div class="invalid-feedback">Max Occupancy is required.</div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label for="category" class="form-label">Category:</label>
+          <select
+            id="category"
+            name="category"
+            class="form-select custom-input"
+            required
+          >
+            <option value="" disabled <%= !listing.category ? "selected" : "" %>>Select category</option>
+            <% const categories = [
+              "house", "flat/apartment", "barn", "boat", "cabin", "campervan", "castle",
+              "container", "cottage", "earth_home", "farm", "guest_house", "hotel",
+              "houseboat", "tiny_home", "tower", "tree_house", "windmill", "yurt"
+            ]; %>
+            <% categories.forEach(cat => { %>
+              <option value="<%= cat %>" <%= listing.category === cat ? 'selected' : '' %>>
+                <%= cat.replace("_", " ").replace("/", " / ").replace(/\b\w/g, c => c.toUpperCase()) %>
+              </option>
+            <% }); %>
+          </select>
+          <div class="invalid-feedback">Category is required.</div>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="mb-3">
+        <label for="address" class="form-label">Address:</label>
+        <input
+          type="text"
+          id="address"
+          name="address"
+          value="<%= listing.address %>"
+          class="form-control custom-input"
+          required
+        />
+      </div>
+
+      <!-- Existing Image -->
+      <div class="mb-3">
+        <p>Original Image:</p>
+        <img src="<%= listing.image.url %>" height="350px" alt="Listing image" />
+      </div>
+
+      <!-- Upload Image -->
+      <div class="mb-3">
+        <label for="image" class="form-label">Upload New Image:</label>
+        <input
+          type="file"
+          id="image"
+          name="image"
+          class="form-control custom-input"
+        />
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn btn-red mb-3">Update Listing</button>
+    </form>
+  </div>
+</div>

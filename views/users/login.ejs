@@ -1,12 +1,4 @@
 <% layout("/layouts/boilerplate") %>
-<style>
-  /* Custom border color on input focus */
-  .custom-input:focus {
-    border-color: #fe424d; /* Airbnb red shade or your preferred color */
-    box-shadow: none; /* Removes default glow */
-    outline: none; /* Removes default outline */
-  }
-</style>
 
 <div class="row" style="margin-top: 80px">
   <div class="col-md-6 offset-md-3">
@@ -14,9 +6,7 @@
     <!-- Login Form -->
     <form action="/login" method="POST" class="needs-validation" novalidate>
       <div class="mb-3">
-        <label for="usernameOrEmail" class="form-label"
-          >Username or Email</label
-        >
+        <label for="usernameOrEmail" class="form-label">Username or Email</label>
         <input
           type="text"
           class="form-control custom-input"
@@ -41,7 +31,7 @@
           <button
             type="button"
             class="btn btn-outline-secondary"
-            onclick="togglePassword()"
+            id="togglePasswordBtn"
             tabindex="-1"
           >
             <i id="toggleIcon" class="fa-solid fa-eye"></i>
@@ -57,36 +47,12 @@
       >
         Login
       </button>
-      <br />
-    </form>
 
-    <!-- <a href="/google" class="btn btn-outline-danger w-100 mb-5"
-      >Sign in with Google</a
-    > -->
-    <div class="text-center">
-      <a href="/forgot-password" style="color: #fe424d">Forgot Password?</a>
-      &nbsp; | &nbsp; Don't have an account? &nbsp;<a
-        href="/signup"
-        style="color: #fe424d; text-decoration: none"
-      >
-        SignUp here</a
-      >
-    </div>
+      <div class="text-center">
+        <a href="/forgot-password" style="color: #fe424d">Forgot Password?</a>
+        &nbsp; | &nbsp; Don't have an account? &nbsp;
+        <a href="/signup" style="color: #fe424d; text-decoration: none">SignUp here</a>
+      </div>
+    </form>
   </div>
 </div>
-
-<script>
-  function togglePassword() {
-    const passwordInput = document.getElementById("password"); // adjust as needed
-    const icon = document.getElementById("toggleIcon");
-    if (passwordInput.type === "password") {
-      passwordInput.type = "text";
-      icon.classList.remove("fa-eye");
-      icon.classList.add("fa-eye-slash");
-    } else {
-      passwordInput.type = "password";
-      icon.classList.remove("fa-eye-slash");
-      icon.classList.add("fa-eye");
-    }
-  }
-</script>

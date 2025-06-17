@@ -4,12 +4,17 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true,
+    required: [true, "Username is required."],
     unique: true,
+    trim: true,
+    minlength: [3, "Username must be at least 3 characters."],
   },
   email: {
     type: String,
-    required: true,
+    required: [true, "Email is required."],
+    trim: true,
+    lowercase: true,
+    match: [/.+\@.+\..+/, "Please fill a valid email address."],
   },
   avatar: {
     url: {
@@ -19,7 +24,7 @@ const userSchema = new mongoose.Schema({
     },
     filename: {
       type: String,
-      default: "", // Optional: an empty string by default
+      default: "",
     },
   },
   favorites: [
@@ -28,11 +33,11 @@ const userSchema = new mongoose.Schema({
       ref: "Listing",
     },
   ],
-
   resetPasswordToken: String,
   resetPasswordExpires: Date,
 });
 
+// Add username + hashed password via passport-local-mongoose
 userSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("User", userSchema);

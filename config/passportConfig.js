@@ -1,4 +1,3 @@
-// config/passport.js
 const LocalStrategy = require("passport-local");
 const User = require("../models/user");
 
@@ -11,26 +10,31 @@ module.exports = (passport) => {
       },
       async (usernameOrEmail, password, done) => {
         try {
-          // Find user by username or email
+          const input = usernameOrEmail.trim().toLowerCase();
           const user = await User.findOne({
-            $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+            $or: [{ username: input }, { email: input }],
           });
+
           if (!user) {
             return done(null, false, {
               message: "Invalid username/email or password.",
             });
           }
 
-          // Use the existing authenticate method from passport-local-mongoose
-          const isValid = await user.authenticate(password);
-          if (!isValid.user) {
+          const { user: authenticatedUser, error } = await user.authenticate(
+            password
+          );
+          if (error || !authenticatedUser) {
             return done(null, false, {
               message: "Invalid username/email or password.",
             });
           }
 
-          return done(null, isValid.user);
+          return done(null, authenticatedUser);
         } catch (err) {
+          if (process.env.NODE_ENV !== "production") {
+            console.error("Passport authentication error:", err);
+          }
           return done(err);
         }
       }
@@ -38,7 +42,7 @@ module.exports = (passport) => {
   );
 
   passport.serializeUser((user, done) => {
-    done(null, user.id); // Use MongoDB _id, which is stable
+    done(null, user.id);
   });
 
   passport.deserializeUser(async (id, done) => {

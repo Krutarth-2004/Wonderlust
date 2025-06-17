@@ -12,21 +12,20 @@ module.exports.renderSignupForm = (req, res) => {
   res.render("users/signup", { hideHeaderFooter: true });
 };
 
-module.exports.signup = async (req, res) => {
+module.exports.signup = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
     const user = new User({ username, email });
     const registeredUser = await User.register(user, password);
-    // Automatically log in the user after registration
+
     req.login(registeredUser, (err) => {
-      if (err) {
-        return next(err);
-      }
+      if (err) return next(err);
       req.flash("success", "Welcome to Wonderlust!");
       res.redirect("/listings");
     });
   } catch (e) {
-    req.flash("error", e.message);
+    console.error("Signup error:", e);
+    req.flash("error", e.message || "Signup failed. Please try again.");
     res.redirect("/signup");
   }
 };
@@ -37,15 +36,12 @@ module.exports.renderLoginForm = (req, res) => {
 
 module.exports.login = async (req, res) => {
   req.flash("success", "Welcome back!");
-
   res.redirect(res.locals.redirectUrl || "/listings");
 };
 
-module.exports.logout = (req, res) => {
+module.exports.logout = (req, res, next) => {
   req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
+    if (err) return next(err);
     req.flash("success", "Logged out successfully!");
     res.redirect("/listings");
   });
@@ -64,20 +60,16 @@ module.exports.forgotPassword = async (req, res) => {
       return res.redirect("/forgot-password");
     }
 
-    // Generate token
     const token = crypto.randomBytes(20).toString("hex");
-
-    // Save token and expiry on user object
     user.resetPasswordToken = token;
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    // Send email
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
-        user: process.env.GMAIL_USER, // Your Gmail address
-        pass: process.env.GMAIL_PASS, // Your Gmail app password
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
       },
     });
 
@@ -87,20 +79,16 @@ module.exports.forgotPassword = async (req, res) => {
       to: user.email,
       from: process.env.GMAIL_USER,
       subject: "Password Reset Request",
-      text: `You are receiving this because you (or someone else) requested a password reset for your account.\n\n
-Please click on the following link, or paste it into your browser to complete the process:\n\n
-${resetURL}\n\n
-If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+      text: `You are receiving this because you (or someone else) requested a password reset.\n\n
+Click the link to reset your password:\n${resetURL}\n\n
+If you didn't request this, ignore this email.\n`,
     };
 
     await transporter.sendMail(mailOptions);
-    req.flash(
-      "success",
-      "An email has been sent with password reset instructions."
-    );
+    req.flash("success", "An email has been sent with reset instructions.");
     res.redirect("/login");
   } catch (err) {
-    console.error(err);
+    console.error("Password reset error:", err);
     req.flash("error", "Something went wrong. Please try again.");
     res.redirect("/forgot-password");
   }
@@ -113,7 +101,7 @@ module.exports.renderResetPasswordForm = async (req, res) => {
       resetPasswordExpires: { $gt: Date.now() },
     });
     if (!user) {
-      req.flash("error", "Password reset token is invalid or has expired.");
+      req.flash("error", "Password reset token is invalid or expired.");
       return res.redirect("/forgot-password");
     }
     res.render("users/resetPassword", {
@@ -121,7 +109,7 @@ module.exports.renderResetPasswordForm = async (req, res) => {
       token: req.params.token,
     });
   } catch (err) {
-    console.error(err);
+    console.error("Render reset form error:", err);
     req.flash("error", "Something went wrong.");
     res.redirect("/forgot-password");
   }
@@ -141,7 +129,7 @@ module.exports.resetPassword = async (req, res) => {
     });
 
     if (!user) {
-      req.flash("error", "Password reset token is invalid or has expired.");
+      req.flash("error", "Token is invalid or expired.");
       return res.redirect("/forgot-password");
     }
 
@@ -152,12 +140,12 @@ module.exports.resetPassword = async (req, res) => {
 
     req.login(user, (err) => {
       if (err) throw err;
-      req.flash("success", "Your password has been reset successfully.");
+      req.flash("success", "Password reset successfully.");
       res.redirect("/login");
     });
   } catch (err) {
-    console.error(err);
-    req.flash("error", "Something went wrong. Please try again.");
+    console.error("Reset password error:", err);
+    req.flash("error", "Something went wrong.");
     res.redirect("/forgot-password");
   }
 };
@@ -166,7 +154,7 @@ module.exports.renderProfile = (req, res) => {
   res.render("users/profile", { user: req.user });
 };
 
-module.exports.updateProfile = async (req, res, next) => {
+module.exports.updateProfile = async (req, res) => {
   try {
     const { username, email } = req.body;
     const user = await User.findById(req.user._id);
@@ -185,23 +173,17 @@ module.exports.updateProfile = async (req, res, next) => {
 
     await user.save();
 
-    // If you must re-login:
-    const successMessage = "Profile updated successfully.";
     req.login(user, (err) => {
       if (err) {
         console.error(err);
         req.flash("error", "Something went wrong. Please try again.");
         return res.redirect("/profile");
       }
-      req.flash("success", successMessage);
+      req.flash("success", "Profile updated successfully.");
       return res.redirect("/profile");
     });
-
-    // OR (skip re-login if not strictly necessary):
-    // req.flash("success", "Profile updated successfully.");
-    // return res.redirect("/profile");
   } catch (err) {
-    console.error(err);
+    console.error("Profile update error:", err);
     req.flash("error", "Something went wrong. Please try again.");
     return res.redirect("/profile");
   }
@@ -212,9 +194,9 @@ module.exports.myListings = async (req, res) => {
     const listings = await Listing.find({ owner: req.user._id }).populate(
       "owner"
     );
-    res.render("users/myListings", { allListings:listings });
+    res.render("users/myListings", { allListings: listings });
   } catch (err) {
-    console.error(err);
+    console.error("My Listings error:", err);
     req.flash("error", "Unable to fetch your listings.");
     res.redirect("/listings");
   }
@@ -225,21 +207,20 @@ module.exports.addToFavorites = async (req, res) => {
     const listingId = req.params.id;
     const user = await User.findById(req.user._id);
 
-    if (!Array.isArray(user.favorites)) {
-      user.favorites = [];
-    }
+    if (!Array.isArray(user.favorites)) user.favorites = [];
 
     if (!user.favorites.includes(listingId)) {
       user.favorites.push(listingId);
       await user.save();
       req.flash("success", "Listing added to favorites.");
     } else {
-      req.flash("info", "Listing is already in your favorites.");
+      req.flash("info", "Listing already in favorites.");
     }
+
     res.redirect(`/listings`);
   } catch (err) {
-    console.error(err);
-    req.flash("error", "Unable to add listing to favorites.");
+    console.error("Add to favorites error:", err);
+    req.flash("error", "Unable to add to favorites.");
     res.redirect("/listings");
   }
 };
@@ -250,20 +231,19 @@ module.exports.removeFromFavorites = async (req, res) => {
     const user = req.user;
 
     if (!user) {
-      req.flash("error", "You must be logged in to perform this action.");
+      req.flash("error", "You must be logged in.");
       return res.redirect("back");
     }
 
-    // Remove listingId from user's favorites
     user.favorites = user.favorites.filter(
       (fav) => fav.toString() !== listingId
     );
     await user.save();
 
     req.flash("success", "Removed from favorites.");
-    res.redirect(req.get("referer") || "/listings"); // Stay on same page
+    res.redirect(req.get("referer") || "/listings");
   } catch (err) {
-    console.error(err);
+    console.error("Remove favorite error:", err);
     req.flash("error", "Something went wrong.");
     res.redirect("back");
   }
@@ -272,10 +252,9 @@ module.exports.removeFromFavorites = async (req, res) => {
 module.exports.favorites = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).populate("favorites");
-    console.log(user.favorites);
     res.render("users/favorites", { favorites: user.favorites });
   } catch (err) {
-    console.error(err);
+    console.error("Fetch favorites error:", err);
     req.flash("error", "Unable to fetch your favorites.");
     res.redirect("/listings");
   }
@@ -293,17 +272,21 @@ module.exports.changePassword = async (req, res) => {
     return res.redirect("/settings");
   }
 
-  const user = await User.findById(req.user._id);
-
-  user.changePassword(currentPassword, newPassword, function (err) {
-    if (err) {
-      req.flash("error", "Current password is incorrect or error occurred.");
-      return res.redirect("/settings");
-    }
-
-    req.flash("success", "Password changed successfully.");
+  try {
+    const user = await User.findById(req.user._id);
+    user.changePassword(currentPassword, newPassword, (err) => {
+      if (err) {
+        req.flash("error", "Current password is incorrect.");
+        return res.redirect("/settings");
+      }
+      req.flash("success", "Password changed successfully.");
+      res.redirect("/settings");
+    });
+  } catch (err) {
+    console.error("Change password error:", err);
+    req.flash("error", "Failed to change password.");
     res.redirect("/settings");
-  });
+  }
 };
 
 module.exports.renderPrivacy = (req, res) => {
@@ -325,7 +308,7 @@ module.exports.myBookings = async (req, res) => {
       .populate("user");
     res.render("users/myBookings", { bookings });
   } catch (err) {
-    console.error(err);
+    console.error("My bookings error:", err);
     req.flash("error", "Unable to fetch your bookings.");
     res.redirect("/listings");
   }
@@ -338,21 +321,21 @@ module.exports.cancelBooking = async (req, res) => {
     const booking = await Booking.findById(bookingId);
 
     if (!booking) {
-      req.flash("error", "Booking not found");
+      req.flash("error", "Booking not found.");
       return res.redirect("/my-bookings");
     }
 
-    // Optional: check if the booking belongs to the logged-in user
     if (!booking.user.equals(req.user._id)) {
-      req.flash("error", "You do not have permission to cancel this booking");
+      req.flash("error", "Not authorized to cancel this booking.");
       return res.redirect("/my-bookings");
     }
 
     await Booking.findByIdAndDelete(bookingId);
-    req.flash("success", "Booking canceled successfully");
+    req.flash("success", "Booking canceled successfully.");
     res.redirect("/my-bookings");
   } catch (error) {
-    req.flash("error", "Failed to cancel booking");
+    console.error("Cancel booking error:", error);
+    req.flash("error", "Failed to cancel booking.");
     res.redirect("/my-bookings");
   }
 };

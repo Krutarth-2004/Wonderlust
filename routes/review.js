@@ -1,10 +1,13 @@
 const express = require("express");
-const router = express.Router({ mergeParams: true });
+const router = express.Router({ mergeParams: true }); // Needed to access :id from parent route
 const wrapAsync = require("../utils/wrapAsync");
-const { validateReview } = require("../middleware");
-const { isLoggedIn, isReviewAuthor } = require("../middleware");
 const reviewController = require("../controllers/reviews");
+const { validateReview, isLoggedIn, isReviewAuthor } = require("../middleware");
 
+/**
+ * CREATE REVIEW
+ * POST /listings/:id/reviews
+ */
 router.post(
   "/",
   isLoggedIn,
@@ -12,6 +15,10 @@ router.post(
   wrapAsync(reviewController.createReview)
 );
 
+/**
+ * DELETE REVIEW
+ * POST /listings/:id/reviews/:reviewId/delete
+ */
 router.post(
   "/:reviewId/delete",
   isLoggedIn,

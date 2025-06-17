@@ -1,588 +1,204 @@
 <% layout("/layouts/boilerplate") %>
-  <style>
-    /* Modal Styles */
-    .custom-input:focus {
-    border-color: #fe424d; /* Airbnb red shade or your preferred color */
-    box-shadow: none; /* Removes default glow */
-    outline: none; /* Removes default outline */
-  }
-  
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      padding-top: 120px;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
 
-    .modal-content {
-      background-color: #fff;
-      margin: auto;
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 500px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
+<div class="row">
+  <div class="col-8 offset-3 mt-3">
+    <h3><b><%= listing.title %></b></h3>
+  </div>
 
-    .modal h2 {
-      margin-top: 0;
-      margin-bottom: 20px;
-      font-size: 24px;
-    }
+  <div class="card col-6 offset-3 show-card listing-card">
+    <br />
+    <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image" height="450px" />
 
-    .modal p {
-      margin: 8px 0;
-      font-size: 16px;
-    }
+    <div class="card-body">
+      <h4 class="card-title mb-3 mt-2">
+        <span class="badge" style="background-color: #fe424d; color: #fff">
+          <%= listing.category %>
+        </span>
+      </h4>
 
-    .modal-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 20px;
-    }
+      <p class="card-text">
+        <i><b>Owned By :</b> <%= listing.owner.username %></i>
+      </p>
 
-    .btn {
-      padding: 8px 16px;
-      background-color: #fe424d;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-    }
+      <p class="card-text mt-3"><%= listing.description %></p>
+      <p class="card-text mt-3">&#8377; <%= listing.price.toLocaleString("en-IN") %> / night</p>
+      <p class="card-text mt-3"><strong>Address:</strong> <%= listing.address %></p>
 
-    .btn-success {
-      background-color: #28a745;
-      color: white;
-    }
+      <!-- Booking Form -->
+      <div class="col-6 mt-3">
+        <div class="card p-3" style="background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width:140%;">
+          <h4 class="mb-3">Book Now</h4>
+          <form id="bookingForm" action="/listings/<%= listing._id %>/book" method="POST" class="needs-validation" novalidate>
+            <!-- Check-in -->
+            <div class="mb-3">
+              <label class="form-label">Check-in</label>
+              <div class="row g-2">
+                <div class="col-6">
+                  <input type="date" class="form-control custom-input" id="checkIn" name="checkIn" required />
+                  <div class="invalid-feedback">Please select a check-in date.</div>
+                </div>
+                <div class="col-6">
+                  <select class="form-select custom-input" id="checkInTime" name="checkInTime" required></select>
+                </div>
+              </div>
+            </div>
 
-    .btn-secondary {
-      background-color: #6c757d;
-      color: white;
-    }
-    .listing-card {
-    border: none;
-    transition: transform 0.2s ease-in-out;
-    cursor: pointer;
-    border-radius: 1rem;
-    overflow: hidden;
-  }
-  .card-body {
-    padding: 0.5rem 0;
-  }
-  .btns{
-    margin-top: 1rem;
-    display: flex;
-    align-items: center;
-  }
-  </style>
-  <script>
-    // Pass coordinates and location from server to client
-    const listingCoordinates = <%- JSON.stringify(listing.geometry.coordinates || []) %>;
-    const listingLocation = <%- JSON.stringify(listing.address || "") %>;
-    const listingtitle = <%- JSON.stringify(listing.title || "") %>;
+            <!-- Check-out -->
+            <div class="mb-3">
+              <label class="form-label">Check-out</label>
+              <div class="row g-2">
+                <div class="col-6">
+                  <input type="date" class="form-control custom-input" id="checkOut" name="checkOut" required />
+                  <div class="invalid-feedback">Please select a check-out date.</div>
+                </div>
+                <div class="col-6">
+                  <select class="form-select custom-input" id="checkOutTime" name="checkOutTime" required></select>
+                </div>
+              </div>
+            </div>
 
-  </script>
+            <!-- Guests -->
+            <div class="mb-3">
+              <label for="guests" class="form-label">Number of Guests</label>
+              <input type="number" class="form-control custom-input" id="guests" name="guests" min="1" max="<%= listing.maxOccupancy %>" required />
+              <div class="invalid-feedback">Please enter a valid number of guests (1 to <%= listing.maxOccupancy %>).</div>
+            </div>
 
-  <div class="row">
-    <div class="col-8 offset-3 mt-3">
-      <h3><b>
-          <%= listing.title %>
-        </b></h3>
-    </div>
+            <!-- Nights -->
+            <div class="mb-3" id="nightsContainer" style="display: none;">
+              <strong>Nights:</strong> <span id="nightsCount" style="color: #fe424d;">0</span>
+            </div>
 
-    <div class="card col-6 offset-3 show-card listing-card">
-      <br />
-      <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image" height="450px" />
-      <div class="card-body">
-        <h4 class="card-title mb-3 mt-2">
+            <!-- Total Cost -->
+            <div class="mb-3" id="totalCostContainer" style="display: none;">
+              <strong>Total Cost:</strong> <span id="totalCost" style="color: #fe424d;">&#8377; 0</span>
+            </div>
 
-          <span class="badge" style="background-color: #fe424d; color: #fff">
-            <%= listing.category %>
-          </span>
-        </h4>
+            <!-- Availability -->
+            <div class="mb-3" id="availabilityContainer" style="display: none;">
+              <span id="availabilityMessage">Checking availability...</span>
+            </div>
 
-        <p class="card-text">
-          <i><b>Owned By :</b>
-            <%= listing.owner.username %>
-          </i>
-        </p>
+            <!-- Submit -->
+            <button id="bookNowButton" type="submit" class="btn" style="background-color: #fe424d; color: #fff; width: 100%; border: none;">
+              Book Now
+            </button>
+          </form>
 
-        <p class="card-text mt-3">
-          <%= listing.description %>
-        </p>
+          <!-- Booking Summary Modal -->
+          <div id="bookingSummaryModal" class="modal" style="z-index: 1000;">
+            <div class="modal-content p-3">
+              <h4>Booking Summary</h4>
+              <p><strong>Title:</strong> <span id="summaryTitle"></span></p>
+              <p><strong>Address:</strong> <span id="summaryAddress"></span></p>
+              <p><strong>Category:</strong> <span id="summaryCategory"></span></p>
+              <p><strong>Owned By:</strong> <span id="summaryOwner"></span></p>
+              <p><strong>Check-in:</strong> <span id="summaryCheckIn"></span>&nbsp;&nbsp;
+                 <strong>Check-in Time:</strong> <span id="summaryCheckInTime"></span></p>
+              <p><strong>Check-out:</strong> <span id="summaryCheckOut"></span>&nbsp;&nbsp;
+                 <strong>Check-out Time:</strong> <span id="summaryCheckOutTime"></span></p>
+              <p><strong>Nights:</strong> <span id="summaryNights"></span>&nbsp;&nbsp;
+                 <strong>Guests:</strong> <span id="summaryGuests"></span></p>
+              <p><strong>Total Cost:</strong> <span id="summaryTotalCost"></span></p>
 
-        <p class="card-text mt-3">
-          &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
-        </p>
-
-        <p class="card-text mt-3">
-          <strong>Address:</strong>
-          <%= listing.address %>
-        </p>
-        <!-- Booking Form -->
-<div class="col-6 mt-3">
-  <div class="card p-3" style="background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width:140%;">
-    <h4 class="mb-3">Book Now</h4>
-    <form id="bookingForm" action="/listings/<%= listing._id %>/book" method="POST" class="needs-validation" novalidate>
-
-      <!-- Check-in Date & Time -->
-      <div class="mb-3">
-        <label class="form-label">Check-in</label>
-        <div class="row g-2">
-          <div class="col-6">
-            <input type="date" class="form-control custom-input" id="checkIn" name="checkIn" required aria-describedby="checkInHelp" />
-            <div class="invalid-feedback">Please select a check-in date.</div>
+              <div class="modal-buttons mt-3">
+                <button id="confirmBookingButton" class="btn btn-success">Confirm Booking</button>
+                <button id="cancelBookingButton" class="btn btn-dark">Cancel</button>
+              </div>
+            </div>
           </div>
-          
-          <div class="col-6">
-            <select class="form-select custom-input" id="checkInTime" name="checkInTime" required>
-              <!-- Options populated via JS -->
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Check-out Date & Time -->
-      <div class="mb-3">
-        <label class="form-label">Check-out</label>
-        <div class="row g-2">
-          <div class="col-6">
-            <input type="date" class="form-control custom-input" id="checkOut" name="checkOut" required aria-describedby="checkOutHelp" />
-            <div class="invalid-feedback">Please select a check-out date.</div>
-          </div>
-          <div class="col-6">
-            <select class="form-select custom-input" id="checkOutTime" name="checkOutTime" required>
-              <!-- Options populated via JS -->
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Number of Guests -->
-      <div class="mb-3">
-        <label for="guests" class="form-label">Number of Guests</label>
-        <input type="number" class="form-control custom-input" id="guests" name="guests" min="1" max="<%= listing.maxOccupancy %>" required aria-describedby="guestsHelp" />
-        <div class="invalid-feedback">
-          Please enter a valid number of guests (1 to <%= listing.maxOccupancy %>).
-        </div>
-      </div>
-
-      <!-- Nights Display -->
-      <div class="mb-3" id="nightsContainer" style="display: none;">
-        <strong>Nights:</strong>
-        <span id="nightsCount" style="color: #fe424d;">0</span>
-      </div>
-
-      <!-- Total Cost Display -->
-      <div class="mb-3" id="totalCostContainer" style="display: none;">
-        <strong>Total Cost:</strong>
-        <span id="totalCost" style="color: #fe424d;">&#8377; 0</span>
-      </div>
-
-      <!-- Availability Message -->
-      <div class="mb-3" id="availabilityContainer" style="display: none;">
-        <span id="availabilityMessage">Checking availability...</span>
-      </div>
-
-      <!-- Submit Button -->
-      <button id="bookNowButton" type="submit" class="btn" style="background-color: #fe424d; color: #fff; width: 100%; border: none;">
-        Book Now
-      </button>
-    </form>
-
-    <!-- Booking Summary Modal -->
-    <div id="bookingSummaryModal" class="modal" style="z-index: 1000;">
-      <div class="modal-content p-3">
-        <h4>Booking Summary</h4>
-        <p><strong>Title:</strong> <span id="summaryTitle"></span></p>
-        <p><strong>Address:</strong> <span id="summaryAddress"></span></p>
-        <p><strong>Category:</strong> <span id="summaryCategory"></span></p>
-        <p><strong>Owned By:</strong> <span id="summaryOwner"></span></p>
-        <p><strong>Check-in:</strong> <span id="summaryCheckIn"></span>&nbsp;&nbsp;
-          <strong>Check-in Time:</strong> <span id="summaryCheckInTime"></span>
-        </p>
-        <p><strong>Check-out:</strong> <span id="summaryCheckOut"></span>&nbsp;&nbsp;
-          <strong>Check-out Time:</strong> <span id="summaryCheckOutTime"></span>
-        </p>
-        <p><strong>Nights:</strong> <span id="summaryNights"></span>&nbsp;&nbsp;
-          <strong>Guests:</strong> <span id="summaryGuests"></span>
-        </p>
-        <p><strong>Total Cost:</strong> <span id="summaryTotalCost"></span></p>
-
-        <div class="modal-buttons mt-3">
-          <button id="confirmBookingButton" class="btn" style="background-color: #28a745; color: #fff; border: none;">
-            Confirm Booking
-          </button>
-          <button id="cancelBookingButton" class="btn" style="background-color: #000; color: #fff; border: none;">
-            Cancel
-          </button>
         </div>
       </div>
     </div>
+  </div>
+
+  <% if (user && listing.owner._id.equals(user._id)) { %>
+    <div class="btns mb-3">
+      <a href="/listings/<%= listing._id %>/edit" class="btn btn-danger col-1 offset-3">Edit</a>
+
+      <form action="/listings/<%= listing._id %>/delete" method="POST" style="display: inline">
+        <button type="submit" class="btn btn-dark ms-2">Delete</button>
+      </form>
+    </div>
+  <% } %>
+
+  <hr />
+
+  <div class="col-8 offset-3">
+    <% if (user) { %>
+      <h4><b>Leave a Review</b></h4>
+      <form action="/listings/<%= listing._id %>/reviews" method="POST" class="mb-3 needs-validation" novalidate>
+        <div class="mt-3">
+          <label for="rating" class="form-label">Rating</label>
+          <fieldset class="starability-slot">
+            <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="1" checked aria-label="No rating." />
+            <% for (let i = 1; i <= 5; i++) { %>
+              <input type="radio" id="first-rate<%= i %>" name="rating" value="<%= i %>" />
+              <label for="first-rate<%= i %>" title="<%= ['Terrible', 'Not good', 'Average', 'Very good', 'Amazing'][i - 1] %>"><%= i %> star<%= i > 1 ? 's' : '' %></label>
+            <% } %>
+          </fieldset>
+        </div>
+        <div class="mb-3">
+          <label for="comment" class="form-label">Comment</label>
+          <textarea id="comment" name="comment" rows="4" class="form-control custom-input" required></textarea>
+          <div class="invalid-feedback">Please provide a comment.</div>
+        </div>
+        <button class="btn btn-danger">Submit</button>
+      </form>
+      <hr />
+    <% } %>
+
+    <h4><b>Reviews</b></h4>
+    <div class="row mb-3">
+      <% if (listing.reviews.length !== 0) { %>
+        <% listing.reviews.forEach((review) => { %>
+          <div class="card col-5 ms-2 mb-3">
+            <div class="card-body">
+              <h5 class="card-title mt-3">@<%= review.author.username %></h5>
+              <p class="card-text">
+                <p class="starability-result" data-rating="<%= review.rating %>"></p>
+                <strong>Comment:</strong> <%= review.comment %>
+              </p>
+              <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>/delete" method="POST">
+                <button class="btn btn-dark">Delete</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="card col-5 ms-2 mb-3">
+          <div class="card-body text-center">
+            <p class="card-text">No reviews yet.</p>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="col-8 offset-3 mb-3">
+    <h3>Where you'll be</h3>
+    <div id="map" style="height: 500px;"></div>
   </div>
 </div>
 
-
-
-
-
-
-
-
-      </div>
-    </div>
-
-    <% if (user && listing.owner._id.equals(user._id)) { %>
-      <div class="btns mb-3">
-        <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3" style="
-        background-color: #fe424d;
-        border: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #fff;
-      ">Edit</a>
-
-        <form action="/listings/<%= listing._id %>/delete" method="POST" style="display: inline">
-          <button type="submit" class="btn btn-dark" style="
-          margin-left: 10px;
-          background-color: #000;
-          color: #fff;
-          border: none;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        ">
-            Delete
-          </button>
-        </form>
-      </div>
-      <% } %>
-
-        <hr />
-
-        <div class="col-8 offset-3">
-          <% if (user) { %>
-            <p><b>
-                <h4>Leave a Review</h4>
-              </b></p>
-            <form action="/listings/<%= listing._id %>/reviews" method="POST" class="mb-3 needs-validation" novalidate>
-              <div class="mt-3">
-                <label for="rating" class="form-label">Rating</label>
-                <fieldset class="starability-slot">
-                  <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="1" checked
-                    aria-label="No rating." />
-                  <input type="radio" id="first-rate1" name="rating" value="1" />
-                  <label for="first-rate1" title="Terrible">1 star</label>
-                  <input type="radio" id="first-rate2" name="rating" value="2" />
-                  <label for="first-rate2" title="Not good">2 stars</label>
-                  <input type="radio" id="first-rate3" name="rating" value="3" />
-                  <label for="first-rate3" title="Average">3 stars</label>
-                  <input type="radio" id="first-rate4" name="rating" value="4" />
-                  <label for="first-rate4" title="Very good">4 stars</label>
-                  <input type="radio" id="first-rate5" name="rating" value="5" />
-                  <label for="first-rate5" title="Amazing">5 stars</label>
-                </fieldset>
-              </div>
-              <div class="mb-3">
-                <label for="comment" class="form-label">Comment</label>
-                <textarea id="comment" name="comment" rows="4" cols="50" class="form-control custom-input"
-                  required></textarea>
-                <div class="invalid-feedback">Please provide a comment.</div>
-              </div>
-              <button class="btn" style="background-color: #fe424d;
-  color: white;">Submit</button>
-            </form>
-            <hr>
-            <% } %>
-
-              <p><b>
-
-                  <h4>Reviews</h4>
-                </b></p>
-
-              <div class="row mb-3">
-                <% if (listing.reviews.length !==0) { %>
-                  <% listing.reviews.forEach((review)=> { %>
-                    <div class="card col-5 ms-2 mb-3">
-                      <div class="card-body">
-                        <h5 class="card-title mt-3">@<%= review.author.username %>
-                        </h5>
-                        <p class="card-text">
-                        <p class="starability-result" data-rating="<%= review.rating %>"></p>
-                        <strong>Comment:</strong>
-                        <%= review.comment %> <br />
-                          </p>
-                          <form class="mb-3" action="/listings/<%= listing._id %>/reviews/<%= review._id %>/delete"
-                            method="POST">
-                            <button class="btn">Delete</button>
-                          </form>
-                      </div>
-                    </div>
-                    <% }) %>
-                      <% } else { %>
-                        <div class="card col-5 ms-2 mb-3">
-                          <div class="card-body text-center">
-                            <p class="card-text">No reviews yet.</p>
-                          </div>
-                        </div>
-                        <% } %>
-              </div>
-        </div>
-        <hr>
-        <div class="col-8 offset-3 mb-3">
-          <h3>Where you'll be</h3>
-          <div id="map" style="height: 500px;"></div> <!-- added height here -->
-        </div>
+<!-- Hidden server error -->
+<% if (error && error.length > 0) { %>
+  <div id="serverError" style="display: none;">
+    <%= error[0] %>
   </div>
-  <!-- Hidden server error element -->
-  <% if (error && error.length> 0) { %>
-    <div id="serverError" style="display: none;">
-      <%= error[0] %>
-    </div>
-    <% } %>
+<% } %>
 
-      <script>
-  const checkInInput = document.getElementById('checkIn');
-  const checkOutInput = document.getElementById('checkOut');
-  const guestsInput = document.getElementById('guests');
-  const checkInTimeInput = document.getElementById('checkInTime');
-  const checkOutTimeInput = document.getElementById('checkOutTime');
-  const nightsCount = document.getElementById('nightsCount');
-  const nightsContainer = document.getElementById('nightsContainer');
-  const totalCostContainer = document.getElementById('totalCostContainer');
-  const totalCostSpan = document.getElementById('totalCost');
-  const availabilityContainer = document.getElementById('availabilityContainer');
-  const availabilityMessage = document.getElementById('availabilityMessage');
-  const pricePerNight = <%= listing.price %>;
-  const maxOccupancy = <%= listing.maxOccupancy %>;
-  const bookNowButton = document.getElementById('bookNowButton');
-  const bookingSummaryModal = document.getElementById('bookingSummaryModal');
-  const confirmBookingButton = document.getElementById('confirmBookingButton');
-  const cancelBookingButton = document.getElementById('cancelBookingButton');
-
-  const summaryTitle = document.getElementById('summaryTitle');
-  const summaryAddress = document.getElementById('summaryAddress');
-  const summaryCategory = document.getElementById('summaryCategory');
-  const summaryOwner = document.getElementById('summaryOwner');
-  const summaryCheckIn = document.getElementById('summaryCheckIn');
-  const summaryCheckInTime = document.getElementById('summaryCheckInTime');
-  const summaryCheckOut = document.getElementById('summaryCheckOut');
-  const summaryCheckOutTime = document.getElementById('summaryCheckOutTime');
-  const summaryNights = document.getElementById('summaryNights');
-  const summaryGuests = document.getElementById('summaryGuests');
-  const summaryTotalCost = document.getElementById('summaryTotalCost');
-
-  /*function populateTimeDropdowns() {
-    const times = ['08:00', '09:00', '10:00', '11:00', '12:00'];
-    checkInTimeInput.innerHTML = times.map(time => `<option value="${time}">${time}</option>`).join('');
-    checkOutTimeInput.innerHTML = times.map(time => `<option value="${time}">${time}</option>`).join('');
-  }
-
-  populateTimeDropdowns();*/
-
-  function calculateAndShowDetails() {
-    const checkInDate = new Date(checkInInput.value);
-    const checkOutDate = new Date(checkOutInput.value);
-    const guests = parseInt(guestsInput.value, 10) || 0;
-
-    nightsContainer.style.display = 'none';
-    totalCostContainer.style.display = 'none';
-    availabilityContainer.style.display = 'none';
-    bookNowButton.disabled = false;
-
-    if (
-      checkInInput.value &&
-      checkOutInput.value &&
-      !isNaN(checkInDate.getTime()) &&
-      !isNaN(checkOutDate.getTime()) &&
-      checkOutDate > checkInDate &&
-      guests > 0
-    ) {
-      const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
-      nightsCount.textContent = nights;
-      nightsContainer.style.display = 'block';
-
-      const total = nights * pricePerNight;
-      const gst = total * 0.18;
-      const totalWithGST = total + gst;
-      totalCostSpan.textContent = `₹ ${totalWithGST.toLocaleString("en-IN")} (incl. 18% GST)`;
-      totalCostContainer.style.display = 'block';
-
-      if (guests > maxOccupancy) {
-        availabilityMessage.textContent = `The total number of guests (${guests}) exceeds the maximum occupancy of ${maxOccupancy}.`;
-        availabilityMessage.style.color = '#fe424d';
-        availabilityContainer.style.display = 'block';
-        bookNowButton.disabled = true;
-      } else {
-        checkAvailability(checkInDate, checkOutDate, guests);
-      }
-    }
-  }
-
-  async function checkAvailability(checkIn, checkOut, guests) {
-    availabilityContainer.style.display = 'block';
-    availabilityMessage.textContent = 'Checking availability...';
-    availabilityMessage.style.color = '#333';
-
-    try {
-      const response = await fetch(`/listings/<%= listing._id %>/availability?checkIn=${checkIn.toISOString()}&checkOut=${checkOut.toISOString()}&guests=${guests}`);
-      const data = await response.json();
-
-      if (data.available) {
-        availabilityMessage.textContent = 'Available!';
-        availabilityMessage.style.color = '#28a745';
-      } else {
-        availabilityMessage.textContent = data.message || 'Not Available!';
-        availabilityMessage.style.color = '#fe424d';
-      }
-
-      handleOccupancyMessage(); // Check the message and disable/enable button accordingly
-    } catch (error) {
-      availabilityMessage.textContent = 'Error checking availability!';
-      availabilityMessage.style.color = '#ffc107';
-    }
-  }
-
-  function handleOccupancyMessage() {
-    const messageText = availabilityMessage.textContent || availabilityMessage.innerText;
-    if (messageText.includes('exceeds the maximum occupancy')) {
-      bookNowButton.disabled = true;
-    } else {
-      bookNowButton.disabled = false;
-    }
-  }
-
-  // Observe changes in availabilityMessage
-  const observer = new MutationObserver(handleOccupancyMessage);
-  if (availabilityMessage) {
-    observer.observe(availabilityMessage, { childList: true, subtree: true });
-  }
-
-  guestsInput.addEventListener('input', calculateAndShowDetails);
-  checkInInput.addEventListener('change', calculateAndShowDetails);
-  checkOutInput.addEventListener('change', calculateAndShowDetails);
-
-  bookNowButton.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    const listingTitle = "<%= listing.title %>";
-    const listingAddress = "<%= listing.address %>";
-    const listingCategory = "<%= listing.category %>";
-    const listingOwner = "<%= listing.owner.username %>";
-    const checkInDate = new Date(checkInInput.value);
-    const checkOutDate = new Date(checkOutInput.value);
-    const guests = parseInt(guestsInput.value, 10) || 0;
-    const checkInTime = checkInTimeInput.value || 'Not specified';
-    const checkOutTime = checkOutTimeInput.value || 'Not specified';
-
-    if (
-      checkInInput.value &&
-      checkOutInput.value &&
-      !isNaN(checkInDate.getTime()) &&
-      !isNaN(checkOutDate.getTime()) &&
-      checkOutDate > checkInDate &&
-      guests > 0
-    ) {
-      const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
-      const total = nights * pricePerNight;
-      const gst = total * 0.18;
-      const totalWithGST = total + gst;
-
-      summaryTitle.textContent = listingTitle;
-      summaryAddress.textContent = listingAddress;
-      summaryCategory.textContent = listingCategory;
-      summaryOwner.textContent = listingOwner;
-
-      summaryCheckIn.textContent = checkInDate.toDateString();
-      summaryCheckInTime.textContent = checkInTime;
-      summaryCheckOut.textContent = checkOutDate.toDateString();
-      summaryCheckOutTime.textContent = checkOutTime;
-      summaryNights.textContent = nights;
-      summaryGuests.textContent = guests;
-      summaryTotalCost.textContent = `₹ ${totalWithGST.toLocaleString("en-IN")} (incl. 18% GST)`;
-
-      bookingSummaryModal.style.display = 'block';
-    } else {
-      alert("Please fill in valid check-in, check-out dates and number of guests.");
-    }
-  });
-
-  confirmBookingButton.addEventListener('click', () => {
-    bookingSummaryModal.style.display = 'none';
-    document.getElementById('bookingForm').submit();
-  });
-
-  cancelBookingButton.addEventListener('click', () => {
-    bookingSummaryModal.style.display = 'none';
-  });
-
-  window.onclick = function (event) {
-    if (event.target == bookingSummaryModal) {
-      bookingSummaryModal.style.display = "none";
-    }
+<script>
+  window.listingData = {
+    _id: "<%= listing._id %>",
+    price: <%= listing.price %>,
+    maxOccupancy: <%= listing.maxOccupancy %>,
+    title: <%- JSON.stringify(listing.title || "") %>,
+    address: <%- JSON.stringify(listing.address || "") %>,
+    category: <%- JSON.stringify(listing.category || "") %>,
+    coordinates: <%- JSON.stringify(listing.geometry.coordinates || []) %>,
+    ownerUsername: <%- JSON.stringify(listing.owner.username || "") %>
   };
-
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      bookingSummaryModal.style.display = 'none';
-    }
-  });
 </script>
-
-
-
-
-      <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          const checkInTimeInput = document.getElementById('checkInTime');
-          const checkOutTimeInput = document.getElementById('checkOutTime');
-
-          function generateTimeOptions(selectElement, defaultTime) {
-            const times = [];
-            for (let hour = 0; hour < 24; hour++) {
-              const hour12 = hour % 12 === 0 ? 12 : hour % 12;
-              const ampm = hour < 12 ? 'AM' : 'PM';
-              const timeString = `${hour12} ${ampm}`;
-              times.push(timeString);
-            }
-
-            times.forEach(time => {
-              const option = document.createElement('option');
-              option.value = time;
-              option.textContent = time;
-              if (time === defaultTime) {
-                option.selected = true;
-              }
-              selectElement.appendChild(option);
-            });
-          }
-
-          generateTimeOptions(checkInTimeInput, '10 AM');
-          generateTimeOptions(checkOutTimeInput, '9 AM');
-
-          // Booked dates fetch
-          /*fetch(`/listings/<%= listing._id %>/booked-dates`)
-            .then(response => response.json())
-            .then(data => {
-              const bookedDatesContainer = document.getElementById('bookedDates');
-              if (data.bookedDates && data.bookedDates.length > 0) {
-                bookedDatesContainer.innerHTML = data.bookedDates
-                  .map(date => `<span style="margin-right:8px;">${date}</span>`)
-                  .join('');
-              } else {
-                bookedDatesContainer.textContent = 'No booked dates yet!';
-              }
-            })
-            .catch(err => {
-              bookedDatesContainer.textContent = 'Error fetching booked dates.';
-              console.error(err);
-            });*/
-        });
-      </script>
