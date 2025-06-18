@@ -23,7 +23,6 @@
 
 ## 🧱 Project Structure
 
-.
 ├── app.js # Entry point
 ├── config/ # DB & Cloudinary configs
 ├── controllers/ # Business logic
@@ -61,6 +60,7 @@
 git clone https://github.com/yourusername/wonderlust.git
 cd wonderlust
 npm install
+
 🧪 Environment Variables
 Create a .env file in the root directory and add the following:
 
@@ -75,6 +75,7 @@ GMAIL_PASS=<your_gmail_pass>
 
 🚀 Run the App
 npm run dev
+
 Then open your browser and navigate to:
 📍 http://localhost:8080
 
