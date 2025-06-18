@@ -21,21 +21,21 @@
 
 ---
 
-## 🧱 Project Structure
-
-├── app.js # Entry point
-├── config/ # DB & Cloudinary configs
-├── controllers/ # Business logic
-├── init/ # Optional seed data
-├── middleware.js # Auth & flash middleware
-├── models/ # Mongoose schemas (User, Listing, Review)
-├── public/ # Static files (CSS, JS, images)
-├── routes/ # Route handlers
-├── utils/ # Validation & helper functions
-├── views/ # EJS templates
-├── schema.js # Joi validation schemas
-├── package.json # Scripts & dependencies
-└── README.md # Documentation
+##🧱 Project Structure
+📦 wonderlust/
+├── app.js                # Main application entry point
+├── config/               # Database & Cloudinary configuration files
+├── controllers/          # Route handler logic (CRUD operations, etc.)
+├── init/                 # Optional initial data seeding
+├── middleware.js         # Custom middleware (auth, flash, etc.)
+├── models/               # Mongoose models (User, Listing, Review)
+├── public/               # Static assets (CSS, client-side JS, images)
+├── routes/               # Express route definitions
+├── utils/                # Helper functions and validators
+├── views/                # EJS template files (layouts, partials, pages)
+├── schema.js             # Joi schema validations
+├── package.json          # NPM dependencies and scripts
+└── README.md             # Project documentation
 
 ---
 
@@ -123,7 +123,7 @@ This project is licensed under the MIT License.
 🙋‍♂️ Author
 Your Name
 📧 krutarthkadia@gmail.com
-🐙 GitHub: @krutarthkadia
+🐙 GitHub: @Krutarth-2004
 🔗 LinkedIn: https://www.linkedin.com/in/krutarth-kadia-76652931a/
 
 ⭐️ If you like this project...
