@@ -61,10 +61,14 @@
 git clone https://github.com/yourusername/wonderlust.git
 cd wonderlust
 npm install
+```
+---
 
-🧪 Environment Variables
-Create a .env file in the root directory and add the following:
+## 🧪 Environment Variables
 
+### Create a .env file in the root directory and add the following:
+
+```bash
 MONGO_URI=<your_mongodb_connection_string>
 CLOUD_NAME=<your_cloudinary_name>
 CLOUD_API_KEY=<your_api_key>
@@ -73,19 +77,30 @@ SECRET=<your_session_secret>
 MAP_TOKEN=<your_map_token>
 GMAIL_USER=<your_gmail_user>
 GMAIL_PASS=<your_gmail_pass>
+```
+---
 
-🚀 Run the App
+## 🚀 Run the App
+```bash
 npm run dev
+```
 
 Then open your browser and navigate to:
+```bash
 📍 http://localhost:8080
+```
+---
 
-🔧 Available Scripts
+## 🔧 Available Scripts
+```bash
 "scripts": {
   "start": "node app.js",
   "dev": "nodemon app.js"
 }
-🌐 Deployment
+```
+---
+
+## 🌐 Deployment
 This app is deployed on Render.
 
 To deploy:
@@ -98,7 +113,9 @@ Add environment variables in Render dashboard
 
 Connect to MongoDB Atlas and Cloudinary
 
-🔐 Authentication & Authorization
+---
+
+## 🔐 Authentication & Authorization
 Only registered users can:
 
 Create/edit/delete their listings
@@ -109,7 +126,9 @@ Add/remove favorites
 
 Non-logged-in users are redirected to /login
 
-🚧 TODO / Future Enhancements
+---
+
+## 🚧 TODO / Future Enhancements
 Add Google OAuth login
 
 Improve mobile responsiveness
@@ -118,14 +137,20 @@ Add email notifications for bookings
 
 Add pagination and filtering
 
-📄 License
+---
+
+## 📄 License
 This project is licensed under the MIT License.
 
-🙋‍♂️ Author
-Your Name
-📧 krutarthkadia@gmail.com
-🐙 GitHub: @Krutarth-2004
-🔗 LinkedIn: https://www.linkedin.com/in/krutarth-kadia-76652931a/
+---
 
-⭐️ If you like this project...
+## 🙋‍♂️ Author
+Krutarth Kadia
+- 📧 krutarthkadia@gmail.com
+- 🐙 GitHub: @Krutarth-2004
+- 🔗 LinkedIn: https://www.linkedin.com/in/krutarth-kadia-76652931a/
+
+---
+
+## ⭐️ If you like this project...
 Please consider giving it a ⭐ on GitHub! It helps others discover it 🙌
