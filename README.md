@@ -24,19 +24,19 @@
 ## 🧱 Project Structure
 
 - 📦 wonderlust/
-─ app.js  (Main application entry point)
-─ config/  (Database & Cloudinary configuration files)
-─ controllers/  (Route handler logic (CRUD operations, etc.))
-─ init/  (Optional initial data seeding)
-─ middleware.js  (Custom middleware (auth, flash, etc.))
-─ models/  (Mongoose models (User, Listing, Review))
-─ public/  (Static assets (CSS, client-side JS, images))
-─ routes/  (Express route definitions)
-─ utils/  (Helper functions and validators)
-─ views/  (EJS template files (layouts, partials, pages))
-─ schema.js  (Joi schema validations)
-─ package.json  (NPM dependencies and scripts)
-─ README.md  (Project documentation)
+- app.js  (Main application entry point)
+- config/  (Database & Cloudinary configuration files)
+- controllers/  (Route handler logic (CRUD operations, etc.))
+- init/  (Optional initial data seeding)
+- middleware.js  (Custom middleware (auth, flash, etc.))
+- models/  (Mongoose models (User, Listing, Review))
+- public/  (Static assets (CSS, client-side JS, images))
+- routes/  (Express route definitions)
+- utils/  (Helper functions and validators)
+- views/  (EJS template files (layouts, partials, pages))
+- schema.js  (Joi schema validations)
+- package.json  (NPM dependencies and scripts)
+- README.md  (Project documentation)
 
 ---
 
