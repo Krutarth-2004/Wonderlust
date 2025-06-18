@@ -21,7 +21,7 @@
 
 ---
 
-##🧱 Project Structure
+## 🧱 Project Structure
 📦 wonderlust/
 ├── app.js                # Main application entry point
 ├── config/               # Database & Cloudinary configuration files
